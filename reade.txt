@@ -1,0 +1,7 @@
+comando para criar o banco de dados postgres com docker
+docker run --name school-db \
+  -e POSTGRES_USER=school_user \
+  -e POSTGRES_PASSWORD=senha123 \
+  -e POSTGRES_DB=school_db \
+  -p 5432:5432 \
+  -d postgres:15
