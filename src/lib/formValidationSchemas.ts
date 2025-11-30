@@ -163,3 +163,42 @@ lessonId: z.coerce.number().optional(),
 
 export type AssignmentSchema = z.infer<typeof assignmentSchema>;
 
+export const resultSchema = z
+  .object({
+    id: z.number().optional(),
+
+    score: z
+      .union([z.string(), z.number()])
+      .transform((val) => Number(val))
+      .refine((val) => val >= 0 && val <= 100, {
+        message: "A nota deve estar entre 0 e 100",
+      }),
+
+    examId: z
+      .union([z.string(), z.number()])
+      .optional()
+      .transform((val) => (val ? Number(val) : undefined)),
+
+    assignmentId: z
+      .union([z.string(), z.number()])
+      .optional()
+      .transform((val) => (val ? Number(val) : undefined)),
+
+    studentId: z.string().min(1, { message: "O aluno é obrigatório!" }),
+  })
+  .refine(
+    (data) => data.examId || data.assignmentId,
+    {
+      message: "Você deve selecionar uma prova ou uma tarefa",
+      path: ["examId"], // pode ser "assignmentId" também
+    }
+  )
+  .refine(
+    (data) => !(data.examId && data.assignmentId),
+    {
+      message: "Selecione apenas uma opção: prova OU tarefa",
+      path: ["assignmentId"],
+    }
+  );
+
+export type ResultSchema = z.infer<typeof resultSchema>;

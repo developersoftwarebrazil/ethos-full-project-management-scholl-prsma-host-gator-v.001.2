@@ -10,6 +10,7 @@ import {
   LessonSchema,
   GradeSchema,
   ParentSchema,
+  ResultSchema,
 } from "./formValidationSchemas";
 
 import prisma from "./prisma";
@@ -802,6 +803,84 @@ export const deleteAssignment = async (
     return { success: true, error: false };
   } catch (err) {
     console.log(err);
+    return { success: false, error: true };
+  }
+};
+// 🟩 Criar novo resultado
+export const createResult = async (
+  currentState: CurrentState,
+  data: ResultSchema
+) => {
+  try {
+    await prisma.result.create({
+      data: {
+        score: Number(data.score),
+        student: {
+          connect: { id: data.studentId },
+        },
+        ...(data.examId && {
+          exam: { connect: { id: Number(data.examId) } },
+        }),
+        ...(data.assignmentId && {
+          assignment: { connect: { id: Number(data.assignmentId) } },
+        }),
+      },
+    });
+
+    revalidatePath("/list/results");
+    return { success: true, error: false };
+  } catch (err) {
+    console.error("❌ Erro ao criar resultado:", err);
+    return { success: false, error: true };
+  }
+};
+
+// 🟦 Atualizar resultado
+export const updateResult = async (
+  currentState: CurrentState,
+  data: ResultSchema
+) => {
+  try {
+    if (!data.id) {
+      throw new Error("ID é obrigatório para atualizar o resultado");
+    }
+
+    await prisma.result.update({
+      where: { id: data.id },
+      data: {
+        score: Number(data.score),
+
+        // limpar e definir novamente examId / assignmentId
+        examId: data.examId ? Number(data.examId) : null,
+        assignmentId: data.assignmentId ? Number(data.assignmentId) : null,
+
+        studentId: data.studentId,
+      },
+    });
+
+    revalidatePath("/list/results");
+    return { success: true, error: false };
+  } catch (err) {
+    console.error("❌ Erro ao atualizar resultado:", err);
+    return { success: false, error: true };
+  }
+};
+
+// 🟥 Deletar resultado
+export const deleteResult = async (
+  currentState: CurrentState,
+  data: FormData
+) => {
+  const id = Number(data.get("id"));
+
+  try {
+    await prisma.result.delete({
+      where: { id },
+    });
+
+    return { success: true, error: false };
+  } catch (err) {
+    console.error("❌ Erro ao deletar resultado:", err);
     return { success: false, error: true };
   }
 };
