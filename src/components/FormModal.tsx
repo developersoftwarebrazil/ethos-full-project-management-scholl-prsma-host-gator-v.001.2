@@ -11,6 +11,7 @@ import {
   deleteLesson,
   deleteAssignment,
   deleteResult,
+  deleteEvent,
 } from "@/lib/actions";
 
 import dynamic from "next/dynamic";
@@ -32,6 +33,7 @@ const deleteActionMap = {
   grade: deleteGrade,
   assignment: deleteAssignment,
   result: deleteResult,
+  event: deleteEvent,
 };
 
 // FORMS (LAZY LOAD)
@@ -68,6 +70,10 @@ const ResultForm = dynamic(() => import("./forms/ResultForm"), {
   loading: () => <h1>Loading...</h1>,
 });
 
+const EventForm = dynamic(() => import("./forms/EventForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+
 // FORM REGISTRY
 const forms: {
   [key: string]: (
@@ -78,39 +84,97 @@ const forms: {
   ) => JSX.Element;
 } = {
   subject: (setOpen, type, data, relatedData) => (
-    <SubjectForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+    <SubjectForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
   class: (setOpen, type, data, relatedData) => (
-    <ClassForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+    <ClassForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
   teacher: (setOpen, type, data, relatedData) => (
-    <TeacherForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+    <TeacherForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
   student: (setOpen, type, data, relatedData) => (
-    <StudentForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+    <StudentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
   parent: (setOpen, type, data, relatedData) => (
-    <ParentForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+    <ParentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
   exam: (setOpen, type, data, relatedData) => (
-    <ExamForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+    <ExamForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
   lesson: (setOpen, type, data, relatedData) => (
-    <LessonForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+    <LessonForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
   grade: (setOpen, type, data, relatedData) => (
-    <GradeForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+    <GradeForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
   assignment: (setOpen, type, data, relatedData) => (
-    <AssignmentForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+    <AssignmentForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
 
   // ⭐ NEW ⭐
   result: (setOpen, type, data, relatedData) => (
-    <ResultForm type={type} data={data} setOpen={setOpen} relatedData={relatedData} />
+    <ResultForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
+  ),
+
+  event: (setOpen, type, data, relatedData) => (
+    <EventForm
+      type={type}
+      data={data}
+      setOpen={setOpen}
+      relatedData={relatedData}
+    />
   ),
 };
-
 const FormModal = ({
   table,
   type,
@@ -148,7 +212,8 @@ const FormModal = ({
       <form action={formAction} className="p-4 flex flex-col gap-4">
         <input type="text | number" name="id" value={id} hidden />
         <span className="text-center font-medium">
-          Todos os dados serão perdidos. Você tem certeza que deseja deletar este {table}?
+          Todos os dados serão perdidos. Você tem certeza que deseja deletar
+          este {table}?
         </span>
         <button className="bg-red-700 text-white py-2 px-4 rounded-md border-none w-max self-center">
           Deletar

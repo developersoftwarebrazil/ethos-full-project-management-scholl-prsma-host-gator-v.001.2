@@ -11,7 +11,9 @@ export type SubjectSchema = z.infer<typeof subjectSchema>;
 export const classSchema = z.object({
   id: z.coerce.number().optional(),
   name: z.string().min(1, { message: "O nome da turma é obrigatório!" }),
-  capacity: z.coerce.number().min(1, { message: "A capacidade é obrigatória!" }),
+  capacity: z.coerce
+    .number()
+    .min(1, { message: "A capacidade é obrigatória!" }),
   gradeId: z.coerce.number().min(1, { message: "O grau é obrigatório!" }),
   supervisorId: z.coerce.string().optional(),
 });
@@ -23,7 +25,9 @@ export const teacherSchema = z.object({
   username: z
     .string()
     .min(3, { message: "O nome de usuário deve ter pelo menos 3 caracteres!" })
-    .max(20, { message: "O nome de usuário deve ter no máximo 20 caracteres!" }),
+    .max(20, {
+      message: "O nome de usuário deve ter no máximo 20 caracteres!",
+    }),
   password: z
     .string()
     .min(8, { message: "A senha deve ter pelo menos 8 caracteres!" })
@@ -53,7 +57,9 @@ export const studentSchema = z.object({
   username: z
     .string()
     .min(3, { message: "O nome de usuário deve ter pelo menos 3 caracteres!" })
-    .max(20, { message: "O nome de usuário deve ter no máximo 20 caracteres!" }),
+    .max(20, {
+      message: "O nome de usuário deve ter no máximo 20 caracteres!",
+    }),
   password: z
     .string()
     .min(8, { message: "A senha deve ter pelo menos 8 caracteres!" })
@@ -75,7 +81,9 @@ export const studentSchema = z.object({
   sex: z.enum(["MALE", "FEMALE"], { message: "O sexo é obrigatório!" }),
   gradeId: z.coerce.number().min(1, { message: "O grau é obrigatório!" }),
   classId: z.coerce.number().min(1, { message: "A turma é obrigatória!" }),
-  parentId: z.string().min(1, { message: "O ID do responsável é obrigatório!" }),
+  parentId: z
+    .string()
+    .min(1, { message: "O ID do responsável é obrigatório!" }),
 });
 
 export type StudentSchema = z.infer<typeof studentSchema>;
@@ -113,7 +121,6 @@ export type ExamSchema = z.infer<typeof examSchema>;
 // });
 
 // export type LessonSchema = z.infer<typeof lessonSchema>;
-  
 
 export const lessonSchema = z.object({
   id: z.number().optional(),
@@ -138,7 +145,6 @@ export const lessonSchema = z.object({
 
 export type LessonSchema = z.infer<typeof lessonSchema>;
 
-
 export const gradeSchema = z.object({
   id: z.coerce.number().optional(),
   level: z.coerce.number(),
@@ -147,19 +153,16 @@ export const gradeSchema = z.object({
 
 export type GradeSchema = z.infer<typeof gradeSchema>;
 
-
-
 export const assignmentSchema = z.object({
-id: z.number().optional(),
-title: z.string().min(1, "O título é obrigatório"),
-description: z.string().optional(),
-startDate: z.coerce.date(),
-dueDate: z.coerce.date(),
-lessonId: z.coerce.number().optional(),
+  id: z.number().optional(),
+  title: z.string().min(1, "O título é obrigatório"),
+  description: z.string().optional(),
+  startDate: z.coerce.date(),
+  dueDate: z.coerce.date(),
+  lessonId: z.coerce.number().optional(),
 
-// lessonId: z.number()
+  // lessonId: z.number()
 });
-
 
 export type AssignmentSchema = z.infer<typeof assignmentSchema>;
 
@@ -186,19 +189,43 @@ export const resultSchema = z
 
     studentId: z.string().min(1, { message: "O aluno é obrigatório!" }),
   })
-  .refine(
-    (data) => data.examId || data.assignmentId,
-    {
-      message: "Você deve selecionar uma prova ou uma tarefa",
-      path: ["examId"], // pode ser "assignmentId" também
-    }
-  )
-  .refine(
-    (data) => !(data.examId && data.assignmentId),
-    {
-      message: "Selecione apenas uma opção: prova OU tarefa",
-      path: ["assignmentId"],
-    }
-  );
+  .refine((data) => data.examId || data.assignmentId, {
+    message: "Você deve selecionar uma prova ou uma tarefa",
+    path: ["examId"], // pode ser "assignmentId" também
+  })
+  .refine((data) => !(data.examId && data.assignmentId), {
+    message: "Selecione apenas uma opção: prova OU tarefa",
+    path: ["assignmentId"],
+  });
 
 export type ResultSchema = z.infer<typeof resultSchema>;
+
+
+export const eventSchema = z
+  .object({
+    id: z.coerce.number().optional(),
+
+    title: z.string().min(1, { message: "O título é obrigatório!" }),
+
+    description: z.string().min(1, { message: "A descrição é obrigatória!" }),
+
+    startTime: z.coerce.date({
+      message: "A hora de início é obrigatória!",
+    }),
+
+    endTime: z.coerce.date({
+      message: "A hora de término é obrigatória!",
+    }),
+
+    classId: z
+      .union([z.string(), z.number()])
+      .optional()
+      .transform((val) => (val ? Number(val) : null))
+      .refine((val) => val === null || val > 0, "Selecione uma turma válida"),
+  })
+  .refine((data) => data.startTime < data.endTime, {
+    message: "A hora de início deve ser antes da hora de término!",
+    path: ["endTime"],
+  });
+
+export type EventSchema = z.infer<typeof eventSchema>;
