@@ -1,4 +1,5 @@
 {
   "WillLuke.nextjs.hasPrompted": true,
-  "commentTranslate.multiLineMerge": true
+  "commentTranslate.multiLineMerge": true,
+  "DockerRun.DisableDockerrc": true
 }
