@@ -2,12 +2,17 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { routeAccessMap } from "./lib/settings";
 import { NextResponse } from "next/server";
 
+const authDisabled = process.env.DISABLED_AUTH === "true";
 const matchers = Object.keys(routeAccessMap).map((route) => ({
   matcher: createRouteMatcher([route]),
   allowedRoles: routeAccessMap[route],
 }));
 
 export default clerkMiddleware(async (auth, req) => {
+  if (authDisabled) {
+    console.log("⚠️ Middleware de autenticação está desativado.");
+    return NextResponse.next();
+  }
   const { sessionClaims, userId } = auth();
 
   const role =
