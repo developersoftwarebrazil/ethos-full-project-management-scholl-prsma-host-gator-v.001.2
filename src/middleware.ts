@@ -3,6 +3,7 @@ import { routeAccessMap } from "./lib/settings";
 import { NextResponse } from "next/server";
 
 const authDisabled = process.env.DISABLED_AUTH === "true";
+
 const matchers = Object.keys(routeAccessMap).map((route) => ({
   matcher: createRouteMatcher([route]),
   allowedRoles: routeAccessMap[route],
@@ -14,7 +15,7 @@ export default clerkMiddleware(async (auth, req) => {
     return NextResponse.next();
   }
   // const { sessionClaims, userId } = auth();
-  const authDisabled = process.env.DISABLE_AUTH === "true";
+
 
 const { userId, sessionClaims } = authDisabled
   ? { userId: "dev-user", sessionClaims: { metadata: { role: "ADMIN" } } }
