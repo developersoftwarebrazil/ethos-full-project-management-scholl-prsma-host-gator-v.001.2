@@ -13,7 +13,13 @@ export default clerkMiddleware(async (auth, req) => {
     console.log("⚠️ Middleware de autenticação está desativado.");
     return NextResponse.next();
   }
-  const { sessionClaims, userId } = auth();
+  // const { sessionClaims, userId } = auth();
+  const authDisabled = process.env.DISABLE_AUTH === "true";
+
+const { userId, sessionClaims } = authDisabled
+  ? { userId: "dev-user", sessionClaims: { metadata: { role: "ADMIN" } } }
+  : auth();
+
 
   const role =
     (sessionClaims?.metadata as { role?: string })?.role?.toString() ?? "";
