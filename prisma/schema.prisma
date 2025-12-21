@@ -195,12 +195,15 @@ enum AttendanceStatus {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
+  id        String   @id @default(uuid())
+  username  String   @unique
+  password  String
+  email     String?  @unique
   name      String
-  role      Role     @default(ADMIN)
+  role      Role
   createdAt DateTime @default(now())
 }
+
 
 enum Role {
   ADMIN

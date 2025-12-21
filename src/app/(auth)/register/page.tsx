@@ -10,14 +10,13 @@
  */
 
 // import * as Clerk from "@clerk/elements/common";
-// import * as SignIn from "@clerk/elements/sign-in";
-// import { useUser } from "@clerk/nextjs";
+// import * as SignUp from "@clerk/elements/sign-up";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const router = useRouter();
 
   /**
@@ -25,81 +24,51 @@ const LoginPage = () => {
    * 🔐 AUTH LOCAL (ATIVO)
    * ================================
    */
+  const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
     setLoading(true);
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username, // 🔑 LOGIN POR USERNAME
+          name,
+          username,
           password,
+          role: "ADMIN", // 🔥 SUPERUSUÁRIO
         }),
       });
 
       if (!res.ok) {
-        setError("Usuário ou senha inválidos");
+        const data = await res.json();
+        setError(data?.message || "Erro ao criar usuário");
         return;
       }
 
-      const data = await res.json();
-
-      /**
-       * Backend retorna:
-       * {
-       *   role: "ADMIN" | "TEACHER" | "STUDENT" | "PARENT"
-       * }
-       */
-      if (data?.role) {
-        router.push(`/${data.role}`);
-      } else {
-        // fallback de segurança
-        router.push("/");
-      }
+      // Usuário criado com sucesso
+      router.push("/login");
     } catch (err) {
-      setError("Erro ao tentar fazer login");
+      setError("Erro inesperado ao criar usuário");
     } finally {
       setLoading(false);
     }
   };
 
-  /**
-   * ================================
-   * 🔁 CLERK REDIRECT (DESATIVADO)
-   * ================================
-   */
-  /*
-  const { isLoaded, isSignedIn, user } = useUser();
-
-  useEffect(() => {
-    if (!isLoaded) return;
-    if (!isSignedIn) return;
-
-    const role = user?.publicMetadata?.role;
-
-    if (role) {
-      router.push(`/${role}`);
-    } else {
-      router.push("/home");
-    }
-  }, [isLoaded, isSignedIn, user, router]);
-  */
-
   return (
     <div className="h-screen flex items-center justify-center bg-lamaSkyLight">
       {/* ================================
-           🔐 LOGIN LOCAL (ATIVO)
+           🔐 REGISTRO LOCAL (ATIVO)
          ================================ */}
       <form
-        onSubmit={handleLogin}
+        onSubmit={handleRegister}
         className="bg-white p-12 rounded-md shadow-2xl flex flex-col gap-3 w-[360px]"
       >
         <h1 className="text-xl font-bold flex items-center gap-2">
@@ -107,9 +76,21 @@ const LoginPage = () => {
           ETHOS CPAC
         </h1>
 
-        <h2 className="text-gray-400">Entre com sua conta</h2>
+        <h2 className="text-gray-400">Criar superusuário</h2>
 
         {error && <p className="text-sm text-red-500">{error}</p>}
+
+        <div className="flex flex-col gap-2">
+          <label className="text-xs text-gray-500">Nome completo</label>
+          <input
+            type="text"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="p-2 rounded-md ring-1 ring-gray-300"
+            placeholder="Administrador"
+          />
+        </div>
 
         <div className="flex flex-col gap-2">
           <label className="text-xs text-gray-500">Nome de usuário</label>
@@ -119,7 +100,7 @@ const LoginPage = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
             className="p-2 rounded-md ring-1 ring-gray-300"
-            placeholder="ex: admin"
+            placeholder="admin"
           />
         </div>
 
@@ -139,25 +120,22 @@ const LoginPage = () => {
           disabled={loading}
           className="bg-blue-500 disabled:bg-blue-300 text-white my-2 rounded-md text-sm p-[10px] uppercase"
         >
-          {loading ? "Entrando..." : "Entrar"}
+          {loading ? "Criando..." : "Criar usuário"}
         </button>
       </form>
 
       {/* ================================
-           🔁 CLERK UI (DESATIVADO)
+           🔁 CLERK SIGN-UP (DESATIVADO)
          ================================ */}
       {/*
-      <SignIn.Root>
-        <SignIn.Step
-          name="start"
-          className="bg-white p-12 rounded-md shadow-2xl flex flex-col gap-2"
-        >
+      <SignUp.Root>
+        <SignUp.Step name="start">
           ...
-        </SignIn.Step>
-      </SignIn.Root>
+        </SignUp.Step>
+      </SignUp.Root>
       */}
     </div>
   );
 };
 
-export default LoginPage;
+export default RegisterPage;
