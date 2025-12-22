@@ -39,28 +39,30 @@ const LoginPage = () => {
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({
+          username, // 🔑 LOGIN POR USERNAME
+          password,
+        }),
       });
 
-      const data = await res.json();
-
       if (!res.ok) {
-        setError(data?.error || "Usuário ou senha inválidos");
+        setError("Usuário ou senha inválidos");
         return;
       }
+
+      const data = await res.json();
 
       /**
        * Backend retorna:
        * {
-       *   id: string;
-       *   username: string;
-       *   role: "ADMIN" | "TEACHER" | "STUDENT" | "PARENT";
+       *   role: "ADMIN" | "TEACHER" | "STUDENT" | "PARENT"
        * }
        */
       if (data?.role) {
         router.push(`/${data.role}`);
       } else {
-        router.push("/"); // fallback de segurança
+        // fallback de segurança
+        router.push("/");
       }
     } catch (err) {
       setError("Erro ao tentar fazer login");
@@ -98,7 +100,7 @@ const LoginPage = () => {
          ================================ */}
       <form
         onSubmit={handleLogin}
-        className="bg-white p-12 rounded-md shadow-2xl flex flex-col gap-4 w-[360px]"
+        className="bg-white p-12 rounded-md shadow-2xl flex flex-col gap-3 w-[360px]"
       >
         <h1 className="text-xl font-bold flex items-center gap-2">
           <Image src="/logo-ETHOS.png" alt="Logo" width={24} height={24} />
