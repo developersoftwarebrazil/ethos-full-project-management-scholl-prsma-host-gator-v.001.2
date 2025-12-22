@@ -1,54 +1,59 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, username, password, role } = body;
+    const { username, password } = body;
 
-    // 🔴 Validação
-    if (!name || !username || !password) {
+    // 🔴 Validação básica
+    if (!username || !password) {
       return NextResponse.json(
-        { message: "Nome, username e senha são obrigatórios" },
+        { message: "Username e senha são obrigatórios" },
         { status: 400 }
       );
     }
 
-    // 🔍 Verifica se já existe
-    const existingUser = await prisma.user.findUnique({
+    // 🔍 Busca usuário LOCAL (Clerk desativado)
+    const user = await prisma.user.findUnique({
       where: { username },
     });
 
-    if (existingUser) {
+    // ❌ Usuário não encontrado
+    if (!user) {
       return NextResponse.json(
-        { message: "Usuário já existe" },
-        { status: 409 }
+        { message: "Usuário não encontrado" },
+        { status: 401 }
       );
     }
 
-    // 🔐 Hash da senha
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // 🔐 Verifica senha
+    const isValid = await bcrypt.compare(password, user.password);
 
-    // ✅ Criação do usuário
-    const user = await prisma.user.create({
-      data: {
-        name,
-        username,
-        password: hashedPassword,
-        role: role ?? "ADMIN",
-      },
+    if (!isValid) {
+      return NextResponse.json(
+        { message: "Senha inválida" },
+        { status: 401 }
+      );
+    }
+
+    // 🍪 Cria sessão simples (LOCAL AUTH)
+    cookies().set("auth_user", user.id, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
     });
 
-    return NextResponse.json(
-      {
-        message: "Usuário criado com sucesso",
-        userId: user.id,
-      },
-      { status: 201 }
-    );
+    return NextResponse.json({
+      message: "Login realizado com sucesso",
+      role: user.role,
+    });
+
   } catch (error) {
-    console.error("[REGISTER_ERROR]", error);
+    console.error("[LOGIN_ERROR]", error);
     return NextResponse.json(
       { message: "Erro interno no servidor" },
       { status: 500 }
