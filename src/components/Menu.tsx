@@ -47,6 +47,11 @@ const menuItems = [
   },
 ];
 
+type SessionData = {
+  role?: string;
+  [key: string]: any;
+};
+
 const Menu = () => {
   const [role, setRole] = useState<string | null>(null);
 
@@ -60,8 +65,10 @@ const Menu = () => {
     const session = Cookies.get("session");
     if (session) {
       try {
-        const parsed = JSON.parse(session);
-        setRole(parsed.role ?? null);
+        const parsed: SessionData = JSON.parse(session);
+
+        // 🔁 Converter role para string minúscula
+        setRole(parsed.role?.toLowerCase() ?? null);
       } catch (err) {
         console.error("Erro ao ler cookie de sessão:", err);
       }
@@ -73,7 +80,7 @@ const Menu = () => {
      * ================================
      * Caso queira voltar ao Clerk:
      * const user = await currentUser();
-     * setRole(user?.publicMetadata.role ?? null);
+     * setRole(user?.publicMetadata.role?.toLowerCase() ?? null);
      */
   }, []);
 
@@ -86,7 +93,7 @@ const Menu = () => {
           </span>
           {section.items.map((item) => {
             if (!role) return null;
-            if (item.visible.includes(role.toLowerCase())) {
+            if (item.visible.includes(role)) {
               return (
                 <Link
                   href={item.href}

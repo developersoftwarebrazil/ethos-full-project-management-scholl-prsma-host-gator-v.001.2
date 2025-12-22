@@ -75,7 +75,14 @@ const Announcements = () => {
           },
         });
 
-        setData(announcements);
+        // 🔁 Conversão de id e classId para string (Opção 1)
+        const mappedAnnouncements = announcements.map((a) => ({
+          ...a,
+          id: a.id.toString(),
+          classId: a.classId ? a.classId.toString() : null,
+        }));
+
+        setData(mappedAnnouncements);
       } catch (err) {
         console.error("Erro ao buscar anúncios:", err);
       }
