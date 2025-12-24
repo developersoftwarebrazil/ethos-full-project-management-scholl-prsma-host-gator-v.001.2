@@ -7,7 +7,9 @@ import FormModal from "@/components/FormModal";
 import AttendanceChartContainer from "@/components/AttendanceChartContainer";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Attendance, Prisma } from "@prisma/client";
-import { auth } from "@clerk/nextjs/server";
+import { getAuthRole, getCurrentUserId } from "@/lib/auth";
+
+// import { auth } from "@clerk/nextjs/server";
 
 type AttendanceList = Attendance & {
   student: {
@@ -26,9 +28,22 @@ const AttendanceListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-  const { userId, sessionClaims } = auth();
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
-  const currentUserId = userId;
+  /**
+   * ================================
+   * 🔐 AUTH LOCAL (ATIVO)
+   * ================================
+   */
+  const role = await getAuthRole();
+  const currentUserId = await getCurrentUserId();
+
+  /**
+   * ================================
+   * 🔁 CLERK (DESATIVADO)
+   * ================================
+   */
+  // const { userId, sessionClaims } = auth();
+  // const role = (sessionClaims?.metadata as { role?: string })?.role;
+  // const currentUserId = userId;
 
   const { page, ...queryParams } = searchParams;
   const p = page ? parseInt(page) : 1;
