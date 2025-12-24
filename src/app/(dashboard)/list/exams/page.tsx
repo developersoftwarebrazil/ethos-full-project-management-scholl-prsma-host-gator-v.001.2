@@ -2,11 +2,23 @@ import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import { getAuthRole, getCurrentUserId } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
+import { auth } from "@clerk/nextjs/server";
 import { Class, Exam, Prisma, Subject, Teacher } from "@prisma/client";
 import Image from "next/image";
-import { auth } from "@clerk/nextjs/server";
+
+/**
+ * ================================
+ * 🔁 CLERK (DESATIVADO)
+ * Para reativar:
+ * 1) importar auth() de @clerk/nextjs/server
+ * 2) pegar role de sessionClaims.metadata
+ * 3) pegar userId de auth()
+ * ================================
+ */
+// import { auth } from "@clerk/nextjs/server";
 
 type ExamList = Exam & {
   lesson: {
@@ -21,10 +33,17 @@ const ExamListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-
-const { userId, sessionClaims } = auth();
-const role = (sessionClaims?.metadata as { role?: string })?.role;
-const currentUserId = userId;
+  /**
+    * ================================
+    * 🔐 AUTH LOCAL (ATIVO)
+    * ================================
+    */
+   const role = await getAuthRole();
+   const currentUserId = await getCurrentUserId();
+ 
+// const { userId, sessionClaims } = auth();
+// const role = (sessionClaims?.metadata as { role?: string })?.role;
+// const currentUserId = userId;
 
 
 const columns = [
