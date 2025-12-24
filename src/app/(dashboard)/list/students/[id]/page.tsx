@@ -1,23 +1,37 @@
+// import { getAuthRole } from "@/app/api/auth/login/route copy 3";
 import Announcements from "@/components/Announcements";
 import BigCalendarContainer from "@/components/BigCalendarContainer";
 import FormContainer from "@/components/FormContainer";
 import Performance from "@/components/Performance";
 import StudentAttendanceCard from "@/components/StudentAttendanceCard";
+import { getAuthRole } from "@/lib/auth";
 import prisma from "@/lib/prisma";
-import { auth } from "@clerk/nextjs/server";
 import { Class, Student } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
+// import { auth } from "@clerk/nextjs/server";
+
 const SingleStudentPage = async ({
   params: { id },
 }: {
   params: { id: string };
 }) => {
-  const { sessionClaims } = auth();
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  /**     * ================================
+   * 🔐 AUTH LOCAL (ATIVO)
+   * ================================
+   */
+  const role = await getAuthRole();
+
+  /**
+   * ================================
+   * 🔁 CLERK (DESATIVADO)
+   * ================================
+   */
+  //  const { sessionClaims } = auth();
+  // const role = (sessionClaims?.metadata as { role?: string })?.role;
 
   const student:
     | (Student & {
