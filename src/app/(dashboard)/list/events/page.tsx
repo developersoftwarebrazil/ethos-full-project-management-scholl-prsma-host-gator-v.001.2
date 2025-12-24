@@ -2,11 +2,13 @@ import FormContainer from "@/components/FormContainer";
 import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
+import { getAuthRole, getCurrentUserId } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Class, Event, Prisma } from "@prisma/client";
 import Image from "next/image";
-import { auth } from "@clerk/nextjs/server";
+
+// import { auth } from "@clerk/nextjs/server";
 
 type EventList = Event & { class: Class };
 
@@ -15,10 +17,21 @@ const EventListPage = async ({
 }: {
   searchParams: { [key: string]: string | undefined };
 }) => {
-
-  const { userId, sessionClaims } = auth();
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
-  const currentUserId = userId;
+  /**     * ================================
+   * 🔐 AUTH LOCAL (ATIVO)
+   * ================================
+   */
+  const role = await getAuthRole();
+  const currentUserId = await getCurrentUserId();
+  
+  /**
+   * ================================
+   * 🔁 CLERK (DESATIVADO)
+   * ================================
+   */
+  // const { userId, sessionClaims } = auth();
+  // const role = (sessionClaims?.metadata as { role?: string })?.role;
+  // const currentUserId = userId;
 
   const columns = [
     {
