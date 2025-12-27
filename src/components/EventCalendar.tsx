@@ -8,21 +8,50 @@ import "react-calendar/dist/Calendar.css";
 type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
-const EventCalendar = ({ dateParam }: { dateParam?: string }) => {
-  // Define a data inicial corretamente
+interface EventCalendarProps {
+  dateParam?: string;
+}
+
+const EventCalendar = ({ dateParam }: EventCalendarProps) => {
+  /**
+   * =====================================================
+   * 📅 Data inicial
+   * =====================================================
+   * - Se vier da URL (?date=)
+   * - Senão usa a data atual
+   */
   const initialDate = dateParam ? new Date(dateParam) : new Date();
 
   const [value, setValue] = useState<Value>(initialDate);
   const router = useRouter();
 
+  /**
+   * =====================================================
+   * 🔁 Atualiza a URL ao trocar a data
+   * =====================================================
+   */
   useEffect(() => {
     if (value instanceof Date) {
-      const iso = value.toISOString();
-      router.push(`?date=${iso}`);
+      const isoDate = value.toISOString();
+      router.push(`?date=${isoDate}`);
     }
   }, [value, router]);
 
-  return <Calendar onChange={setValue} value={value} />;
+  /**
+   * =====================================================
+   * 🛑 PONTO CRÍTICO (HYDRATION FIX)
+   * =====================================================
+   * locale="pt-BR" garante que:
+   * - Server e Client renderizem o mesmo texto
+   * - Evita "December" vs "dezembro"
+   */
+  return (
+    <Calendar
+      value={value}
+      onChange={setValue}
+      locale="pt-BR"
+    />
+  );
 };
 
 export default EventCalendar;
