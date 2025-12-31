@@ -8,8 +8,8 @@
  */
 // import { auth } from "@clerk/nextjs/server";
 
-import Announcements from "@/components/Announcements-funcionando";
-import prisma from "@/lib/prisma";
+import Announcements from "@/components/Announcements"; 
+//import BigCalendarContainer from "@/components/BigCalendarContainer";
 import dynamic from "next/dynamic";
 import { cookies } from "next/headers";
 
@@ -18,7 +18,7 @@ const BigCalendarContainer = dynamic(
   { ssr: false }
 );
 
-const ParentPage = async () => {
+const TeacherPage = () => {
   /**
    * ================================
    * 🔐 AUTH LOCAL (SEM CLERK)
@@ -38,7 +38,7 @@ const ParentPage = async () => {
     }
   }
 
-  // Usuário não autenticado
+  // Se não estiver autenticado, não renderiza
   if (!userId) return null;
 
   /**
@@ -48,41 +48,15 @@ const ParentPage = async () => {
    */
   // const { userId } = auth();
 
-  /**
-   * ================================
-   * 👨‍👩‍👧 BUSCA DOS ALUNOS DO RESPONSÁVEL
-   * ================================
-   */
-  const students = await prisma.student.findMany({
-    where: {
-      parentId: userId,
-    },
-    include: {
-      class: true,
-    },
-  });
-
-  // Responsável sem alunos vinculados
-  if (students.length === 0) return null;
-
   return (
     <div className="flex-1 p-4 flex gap-4 flex-col xl:flex-row">
       {/* LEFT */}
-      <div className="flex flex-col gap-4 w-full xl:w-2/3">
-        {students.map((student) => (
-          <div key={student.id} className="bg-white p-4 rounded-md">
-            <h1 className="text-xl font-semibold">
-              Agenda ({student.name} {student.surname})
-            </h1>
+      <div className="w-full xl:w-2/3">
+        <div className="h-full bg-white p-4 rounded-md">
+          <h1 className="text-xl font-semibold">Agenda</h1>
 
-            {student.classId && (
-              <BigCalendarContainer
-                type="classId"
-                id={student.classId}
-              />
-            )}
-          </div>
-        ))}
+          <BigCalendarContainer type="teacherId" id={userId} />
+        </div>
       </div>
 
       {/* RIGHT */}
@@ -93,4 +67,4 @@ const ParentPage = async () => {
   );
 };
 
-export default ParentPage;
+export default TeacherPage;

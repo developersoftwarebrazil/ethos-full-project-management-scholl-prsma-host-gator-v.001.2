@@ -40,6 +40,8 @@ import { AssignmentSchema } from "@/lib/formValidationSchemas";
 import dayjs from "dayjs";
 import { AttendanceStatus } from "@prisma/client";
 import { requireAuth } from "./auth";
+import { hashPassword } from "./passwords";
+import { da } from "date-fns/locale";
 
 type CurrentState = { success: boolean; error: boolean };
 
@@ -256,11 +258,14 @@ export const createTeacher = async (
      * Aqui criamos PRIMEIRO o usuário no banco local (Prisma)
      * Esse ID será a fonte da verdade do sistema
      */
+    const hashedPassword = data.password
+      ? await hashPassword(data.password)
+      : "";
     const user = await prisma.user.create({
       data: {
         username: data.username,
         name: data.name,
-        password: data.password || "", // garantir string
+        password: hashedPassword, // garantir string
         role: "teacher",
       },
     });
@@ -539,11 +544,14 @@ export const createStudent = async (
      * Criamos PRIMEIRO o User local
      * O ID gerado será reutilizado no Student
      */
+    const hashedPassword = data.password
+      ? await hashPassword(data.password)
+      : "";
     const user = await prisma.user.create({
       data: {
         username: data.username,
         name: data.name,
-        password: data.password || "", // garantir string
+        password: hashedPassword, // garantir string
         role: "student",
       },
       select: { id: true },
@@ -881,7 +889,7 @@ export const createParent = async (
      *   publicMetadata: { role: "parent" },
      * });
      */
-
+    
     const parentId = crypto.randomUUID();
     await prisma.parent.create({
       data: {
