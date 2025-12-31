@@ -1,24 +1,7 @@
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 
-/**
- * ================================
- * 🔁 CLERK (DESATIVADO)
- * Para reativar:
- *
- * 1) Descomentar os imports abaixo
- * 2) Trocar a implementação de getAuthUser / getAuthRole
- * 3) Garantir clerkMiddleware no middleware.ts
- *
- * import { auth } from "@clerk/nextjs/server";
- * ================================
- */
-
-/**
- * ================================
- * TIPOS COMPARTILHADOS
- * ================================
- */
 type LocalSession = {
   userId: string;
   role: string;
@@ -34,12 +17,12 @@ type AuthUser = {
  * 🔐 SESSION LOCAL (COOKIE)
  * ================================
  */
-function getLocalSession(): LocalSession | null {
-  const value = cookies().get("session")?.value;
-  if (!value) return null;
+function readSession(): LocalSession | null {
+  const cookie = cookies().get("session");
+  if (!cookie) return null;
 
   try {
-    return JSON.parse(value) as LocalSession;
+    return JSON.parse(cookie.value) as LocalSession;
   } catch {
     return null;
   }
@@ -47,35 +30,11 @@ function getLocalSession(): LocalSession | null {
 
 /**
  * ================================
- * 🚀 API PÚBLICA DE AUTH
+ * 👤 USUÁRIO AUTENTICADO
  * ================================
  */
-
-/**
- * Retorna o usuário autenticado
- * - Local: cookie + prisma
- * - Clerk: auth() + prisma (quando reativar)
- */
 export async function getAuthUser(): Promise<AuthUser | null> {
-  /**
-   * ================================
-   * 🔁 CLERK (DESATIVADO)
-   * ================================
-   */
-  // const { userId, sessionClaims } = auth();
-  // if (!userId) return null;
-  //
-  // return {
-  //   id: userId,
-  //   role: (sessionClaims?.metadata as { role?: string })?.role ?? "user",
-  // };
-
-  /**
-   * ================================
-   * 🔐 LOCAL AUTH
-   * ================================
-   */
-  const session = getLocalSession();
+  const session = readSession();
   if (!session) return null;
 
   const user = await prisma.user.findUnique({
@@ -86,75 +45,47 @@ export async function getAuthUser(): Promise<AuthUser | null> {
     },
   });
 
-  if (!user) return null;
-
-  return {
-    id: user.id,
-    role: user.role,
-  };
-}
-
-/**
- * Retorna apenas o role do usuário
- */
-export async function getAuthRole(): Promise<string | null> {
-  /**
-   * ================================
-   * 🔁 CLERK (DESATIVADO)
-   * ================================
-   */
-  // const { sessionClaims } = auth();
-  // return (sessionClaims?.metadata as { role?: string })?.role ?? null;
-
-  /**
-   * ================================
-   * 🔐 LOCAL AUTH
-   * ================================
-   */
-  return getLocalSession()?.role ?? null;
+  return user ?? null;
 }
 
 /**
  * ================================
- * 🔒 GUARDA DE ROTA
+ * 🎭 ROLE
+ * ================================
+ */
+export async function getAuthRole(): Promise<string | null> {
+  return readSession()?.role ?? null;
+}
+
+/**
+ * ================================
+ * 🔒 GUARDA DE ROTA (CORRETA)
  * ================================
  */
 export async function requireAuth(): Promise<AuthUser> {
   const user = await getAuthUser();
 
   if (!user) {
-    throw new Error("UNAUTHORIZED");
+    redirect("/login"); // 🔥 ESSENCIAL
   }
 
   return user;
 }
+
 /**
- * Retorna apenas o ID do usuário autenticado
+ * ================================
+ * 🆔 USER ID
+ * ================================
  */
 export async function getCurrentUserId(): Promise<string | null> {
-  /**
-   * ================================
-   * 🔁 CLERK (DESATIVADO)
-   * ================================
-   */
-  // const { userId } = auth();
-  // return userId ?? null;
-
-  /**
-   * ================================
-   * 🔐 LOCAL AUTH
-   * ================================
-   */
-  return getLocalSession()?.userId ?? null;
+  return readSession()?.userId ?? null;
 }
-/**
- * Retorna o ID do usuário ou lança erro se não autenticado
- */
+
 export async function requireUserId(): Promise<string> {
   const userId = await getCurrentUserId();
 
   if (!userId) {
-    throw new Error("UNAUTHORIZED");
+    redirect("/login"); // 🔥 NÃO use throw
   }
 
   return userId;

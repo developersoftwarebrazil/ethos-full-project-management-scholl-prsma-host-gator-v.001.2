@@ -13,6 +13,7 @@ import EventCalendar from "@/components/EventCalendar";
 import prisma from "@/lib/prisma";
 import dynamic from "next/dynamic";
 import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 const BigCalendarContainer = dynamic(
   () => import("@/components/BigCalendarContainer"),
@@ -33,14 +34,16 @@ const StudentPage = async () => {
   if (session) {
     try {
       const parsed = JSON.parse(session.value);
-      userId = parsed.id ?? null;
+      userId = parsed.userId ?? null; // 🔥 correção importante
     } catch {
       userId = null;
     }
   }
 
-  // Se não estiver autenticado
-  if (!userId) return null;
+  // 🔒 NÃO autenticado → login
+  if (!userId) {
+    redirect("/login");
+  }
 
   /**
    * ================================
@@ -48,6 +51,7 @@ const StudentPage = async () => {
    * ================================
    */
   // const { userId } = auth();
+  // if (!userId) redirect("/login");
 
   /**
    * ================================
@@ -62,9 +66,32 @@ const StudentPage = async () => {
     },
   });
 
-  // Se o aluno não estiver vinculado a nenhuma turma
-  if (!classItem) return null;
+  /**
+   * ⚠️ ALUNO SEM TURMA
+   * NÃO renderiza página em branco
+   */
+  if (!classItem) {
+    return (
+      <div className="p-8">
+        <div className="bg-white rounded-md p-6 shadow">
+          <h1 className="text-xl font-semibold text-red-500">
+            Nenhuma turma encontrada
+          </h1>
+          <p className="text-gray-500 mt-2">
+            Você ainda não está vinculado a nenhuma turma.
+            <br />
+            Entre em contato com a coordenação.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
+  /**
+   * ================================
+   * ✅ DASHBOARD NORMAL
+   * ================================
+   */
   return (
     <div className="p-4 flex gap-4 flex-col xl:flex-row">
       {/* LEFT */}

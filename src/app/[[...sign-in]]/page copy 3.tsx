@@ -32,8 +32,6 @@ const LoginPage = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (loading) return;
-
     setError("");
     setLoading(true);
 
@@ -60,20 +58,15 @@ const LoginPage = () => {
        *   role: "ADMIN" | "TEACHER" | "STUDENT" | "PARENT"
        * }
        */
-
-      if (!data?.role) {
-        setError("Role do usuário não encontrada");
-        return;
+      if (data?.role) {
+        // Redireciona para rota baseada no role
+        router.push(`/${data.role}`);
+      } else {
+        router.push("/"); // fallback de segurança
       }
-
-      // 🔑 NORMALIZA ROLE (regra única do projeto)
-      const role = data.role.toLowerCase();
-
-      // 🔁 Redirecionamento seguro (SEM loop)
-      router.replace(`/${role}`);
     } catch (err) {
-      console.error("🔥 [LOGIN_ERROR]", err);
       setError("Erro ao tentar fazer login");
+      console.error("🔥 [LOGIN_ERROR]", err);
     } finally {
       setLoading(false);
     }
@@ -94,9 +87,9 @@ const LoginPage = () => {
     const role = user?.publicMetadata?.role;
 
     if (role) {
-      router.replace(`/${role.toLowerCase()}`);
+      router.push(`/${role}`);
     } else {
-      router.replace("/");
+      router.push("/home");
     }
   }, [isLoaded, isSignedIn, user, router]);
   */
@@ -156,7 +149,12 @@ const LoginPage = () => {
          ================================ */}
       {/*
       <SignIn.Root>
-        <SignIn.Step name="start">...</SignIn.Step>
+        <SignIn.Step
+          name="start"
+          className="bg-white p-12 rounded-md shadow-2xl flex flex-col gap-2"
+        >
+          ...
+        </SignIn.Step>
       </SignIn.Root>
       */}
     </div>
