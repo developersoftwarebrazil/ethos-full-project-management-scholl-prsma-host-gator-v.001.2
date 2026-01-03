@@ -1,5 +1,7 @@
 "use server";
 
+import { role } from "../../../lib/data";
+
 import { revalidatePath } from "next/cache";
 import {
   ClassSchema,
@@ -14,19 +16,39 @@ import {
   EventSchema,
   AttendanceSchema,
   AnnouncementSchema,
-} from "./formValidationSchemas";
+} from "../../../lib/formValidationSchemas";
 
-import prisma from "./prisma";
-import { clerkClient } from "@clerk/nextjs/server";
+/**
+ * =========================================================
+ * 🔁 CLERK (DESATIVADO TEMPORARIAMENTE)
+ *
+ * Para reativar o Clerk no futuro:
+ *
+ * 1) Descomentar os imports abaixo
+ * 2) Substituir requireAuth / getAuthUser pelo auth()
+ * 3) Garantir clerkMiddleware ativo no middleware.ts
+ *
+ * import { auth } from "@clerk/nextjs/server";
+ * import { clerkClient } from "@clerk/nextjs/server";
+ * =========================================================
+ */
+
+import prisma from "../../../lib/prisma";
 
 import { AssignmentSchema } from "@/lib/formValidationSchemas";
-import { auth } from "@clerk/nextjs/server";
+
 import dayjs from "dayjs";
 import { AttendanceStatus } from "@prisma/client";
+import { requireAuth } from "../../../lib/auth";
+import { hashPassword } from "../../../lib/passwords";
+import { da } from "date-fns/locale";
 
 type CurrentState = { success: boolean; error: boolean };
 
-// 🟩 Criar nova Série / Nível
+/* =========================================================
+ * 📕 Grade
+ * ========================================================= */
+
 export const createGrade = async (data: GradeSchema) => {
   try {
     await prisma.grade.create({
@@ -91,6 +113,9 @@ export const deleteGrade = async (
   }
 };
 
+/* =========================================================
+ * 📕 SUBJECTS
+ * ========================================================= */
 export const createSubject = async (
   currentState: CurrentState,
   data: SubjectSchema
@@ -158,6 +183,9 @@ export const deleteSubject = async (
   }
 };
 
+/* =========================================================
+ * 📕 CLASSES
+ * ========================================================= */
 export const createClass = async (
   currentState: CurrentState,
   data: ClassSchema
@@ -215,11 +243,70 @@ export const deleteClass = async (
   }
 };
 
+/* =========================================================
+ * 📕 TEACHERS
+ * ========================================================= */
 export const createTeacher = async (
   currentState: CurrentState,
   data: TeacherSchema
 ) => {
   try {
+    /**
+     * =====================================================
+     * 🔐 AUTH LOCAL (ATIVO)
+     * =====================================================
+     * Aqui criamos PRIMEIRO o usuário no banco local (Prisma)
+     * Esse ID será a fonte da verdade do sistema
+     */
+    const hashedPassword = data.password
+      ? await hashPassword(data.password)
+      : "";
+    const user = await prisma.user.create({
+      data: {
+        username: data.username,
+        name: data.name,
+        password: hashedPassword, // garantir string
+        role: "teacher",
+      },
+    });
+    /**
+     * =====================================================
+     * 👨‍🏫 TEACHER (USA User.id)
+     * =====================================================
+     * O teacher.id AGORA é o MESMO id do User
+     */
+    await prisma.teacher.create({
+      data: {
+        id: user.id, //User.id (não o CLERK)
+        username: data.username,
+        name: data.name,
+        surname: data.surname,
+        email: data.email || null,
+        phone: data.phone || null,
+        address: data.address,
+        img: data.img || null,
+        bloodType: data.bloodType,
+        sex: data.sex,
+        birthday: data.birthday,
+        subjects: {
+          connect: data.subjects?.map((subjectId: string) => ({
+            id: parseInt(subjectId),
+          })),
+        },
+      },
+    });
+
+    /**
+     * =====================================================
+     * 🔁 CLERK (DESATIVADO TEMPORARIAMENTE)
+     * =====================================================
+     * Quando quiser reativar o Clerk:
+     *
+     * 1) Criar o usuário no Clerk
+     * 2) Salvar clerkUserId no User (ex: clerkId)
+     * 3) NÃO usar clerkUserId como PK
+     */
+    /*
     const user = await clerkClient.users.createUser({
       username: data.username,
       password: data.password,
@@ -249,7 +336,7 @@ export const createTeacher = async (
         },
       },
     });
-
+  */
     // revalidatePath("/list/teachers");
     return { success: true, error: false };
   } catch (err) {
@@ -262,23 +349,48 @@ export const updateTeacher = async (
   currentState: CurrentState,
   data: TeacherSchema
 ) => {
+  /**
+   * =====================================================
+   * 🛑 VALIDAÇÃO BÁSICA
+   * =====================================================
+   * Sem ID não existe update
+   */
   if (!data.id) {
     return { success: false, error: true };
   }
-  try {
-    const user = await clerkClient.users.updateUser(data.id, {
-      username: data.username,
-      ...(data.password !== "" && { password: data.password }),
-      firstName: data.name,
-      lastName: data.surname,
-    });
 
-    await prisma.teacher.update({
+  try {
+    /**
+     * =====================================================
+     * 🔐 AUTH LOCAL (ATIVO)
+     * =====================================================
+     * Aqui NÃO usamos Clerk.
+     * O ID recebido (data.id) é o User.id / Teacher.id
+     */
+
+    /**
+     * 1️⃣ Atualiza o USER (auth local)
+     */
+    await prisma.user.update({
       where: {
-        id: data.id,
+        id: data.id, // ✅ User.id (fonte da verdade)
       },
       data: {
-        ...(data.password !== "" && { password: data.password }),
+        username: data.username,
+        ...(data.password !== "" && {
+          password: data.password, // ⚠️ lembre-se: senha já deve estar hasheada
+        }),
+      },
+    });
+
+    /**
+     * 2️⃣ Atualiza o TEACHER
+     */
+    await prisma.teacher.update({
+      where: {
+        id: data.id, // ✅ MESMO ID do User
+      },
+      data: {
         username: data.username,
         name: data.name,
         surname: data.surname,
@@ -296,10 +408,30 @@ export const updateTeacher = async (
         },
       },
     });
+
+    /**
+     * =====================================================
+     * 🔁 CLERK (DESATIVADO TEMPORARIAMENTE)
+     * =====================================================
+     * Quando quiser reativar o Clerk:
+     *
+     * ⚠️ IMPORTANTE:
+     * - NÃO use User.id como ID do Clerk
+     * - Use um campo separado (ex: clerkId)
+     */
+    /*
+    await clerkClient.users.updateUser(data.id, {
+      username: data.username,
+      ...(data.password !== "" && { password: data.password }),
+      firstName: data.name,
+      lastName: data.surname,
+    });
+    */
+
     // revalidatePath("/list/teachers");
     return { success: true, error: false };
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return { success: false, error: true };
   }
 };
@@ -308,23 +440,82 @@ export const deleteTeacher = async (
   currentState: CurrentState,
   data: FormData
 ) => {
+  /**
+   * =====================================================
+   * 📌 ID DO USUÁRIO / PROFESSOR
+   * =====================================================
+   * No sistema local:
+   * - User.id === Teacher.id
+   */
   const id = data.get("id") as string;
-  try {
-    await clerkClient.users.deleteUser(id);
 
-    await prisma.teacher.delete({
-      where: {
-        id: id,
+  if (!id) {
+    return { success: false, error: true };
+  }
+
+  try {
+    /**
+     * =====================================================
+     * 🔐 AUTH LOCAL (ATIVO)
+     * =====================================================
+     * Ordem IMPORTANTE:
+     * 1) Deletar entidades dependentes
+     * 2) Deletar Teacher
+     * 3) Deletar User
+     */
+
+    /**
+     * 1️⃣ Remove relações (subjects)
+     * Evita erro de FK
+     */
+    await prisma.teacher.update({
+      where: { id },
+      data: {
+        subjects: {
+          set: [],
+        },
       },
     });
+
+    /**
+     * 2️⃣ Deleta o TEACHER
+     */
+    await prisma.teacher.delete({
+      where: { id },
+    });
+
+    /**
+     * 3️⃣ Deleta o USER (auth local)
+     */
+    await prisma.user.delete({
+      where: { id },
+    });
+
+    /**
+     * =====================================================
+     * 🔁 CLERK (DESATIVADO TEMPORARIAMENTE)
+     * =====================================================
+     * Quando reativar o Clerk:
+     *
+     * ⚠️ ATENÇÃO:
+     * - NÃO use User.id diretamente se não for o clerkId
+     * - O ideal é armazenar clerkId separado no User
+     */
+    /*
+    await clerkClient.users.deleteUser(id);
+    */
 
     // revalidatePath("/list/teachers");
     return { success: true, error: false };
   } catch (err) {
-    console.log(err);
+    console.error(err);
     return { success: false, error: true };
   }
 };
+
+/* =========================================================
+ * 📕 STUDENTS
+ * ========================================================= */
 
 export const createStudent = async (
   currentState: CurrentState,
@@ -332,6 +523,12 @@ export const createStudent = async (
 ) => {
   console.log(data);
   try {
+    /**
+     * =====================================================
+     * 🧠 REGRA DE NEGÓCIO
+     * Verifica capacidade da turma
+     * =====================================================
+     */
     const classItem = await prisma.class.findUnique({
       where: { id: Number(data.classId) },
       include: { _count: { select: { students: true } } },
@@ -340,15 +537,45 @@ export const createStudent = async (
     if (classItem && classItem.capacity === classItem._count.students) {
       return { success: false, error: true };
     }
-
-    const user = await clerkClient.users.createUser({
-      username: data.username,
-      password: data.password,
-      firstName: data.name,
-      lastName: data.surname,
-      emailAddress: data.email ? [data.email] : undefined,
-      publicMetadata: { role: "student" },
+    /**
+     * =====================================================
+     * 🔐 AUTH LOCAL (ATIVO)
+     * =====================================================
+     * Criamos PRIMEIRO o User local
+     * O ID gerado será reutilizado no Student
+     */
+    const hashedPassword = data.password
+      ? await hashPassword(data.password)
+      : "";
+    const user = await prisma.user.create({
+      data: {
+        username: data.username,
+        name: data.name,
+        password: hashedPassword, // garantir string
+        role: "student",
+      },
+      select: { id: true },
     });
+    /**
+     * =====================================================
+     * 🔁 CLERK (DESATIVADO)
+     * =====================================================
+     * Quando reativar:
+     *
+     * const user = await clerkClient.users.createUser({
+     * username: data.username,
+     * password: data.password,
+     * firstName: data.name,
+     * lastName: data.surname,
+     + emailAddress: data.email ? [data.email] : undefined,
+     * publicMetadata: { role: "student" },
+    *});
+    */
+    /**
+     * =====================================================
+     * 👨‍🎓 CREATE STUDENT
+     * =====================================================
+     */
 
     await prisma.student.create({
       data: {
@@ -384,12 +611,31 @@ export const updateStudent = async (
     return { success: false, error: true };
   }
   try {
-    const user = await clerkClient.users.updateUser(data.id, {
-      username: data.username,
-      ...(data.password !== "" && { password: data.password }),
-      firstName: data.name,
-      lastName: data.surname,
+    /**
+     * =====================================================
+     * 🔐 AUTH LOCAL (ATIVO)
+     * Atualiza dados do User
+     * =====================================================
+     */
+    await prisma.user.update({
+      where: { id: data.id },
+      data: {
+        username: data.username,
+        ...(data.password !== "" && { password: data.password }),
+      },
     });
+
+    /**
+     * =====================================================
+     * 🔁 CLERK (DESATIVADO)
+     *
+     * const user = await clerkClient.users.updateUser(data.id, {
+     * username: data.username,
+     *   ...(data.password !== "" && { password: data.password }),
+     * firstName: data.name,
+     * lastName: data.surname,
+     *});
+     */
 
     await prisma.student.update({
       where: {
@@ -426,12 +672,28 @@ export const deleteStudent = async (
 ) => {
   const id = data.get("id") as string;
   try {
-    await clerkClient.users.deleteUser(id);
+    /**
+     * =====================================================
+     * 🔁 CLERK (DESATIVADO)
+     * =====================================================
+     *await clerkClient.users.deleteUser(id);
+     */
 
+    /**
+     * =====================================================
+     * 🔐 AUTH LOCAL (ATIVO)
+     * Ordem correta:
+     * 1) Student
+     * 2) User
+     * =====================================================
+     */
     await prisma.student.delete({
       where: {
         id: id,
       },
+    });
+    await prisma.user.delete({
+      where: { id: id },
     });
 
     // revalidatePath("/list/students");
@@ -442,13 +704,14 @@ export const deleteStudent = async (
   }
 };
 
+/* =========================================================
+ * 📕 EXAMS
+ * ========================================================= */
 export const createExam = async (
   currentState: CurrentState,
   data: ExamSchema
 ) => {
-
   try {
-
     await prisma.exam.create({
       data: {
         title: data.title,
@@ -458,7 +721,7 @@ export const createExam = async (
       },
     });
 
-   revalidatePath("/list/subjects");
+    revalidatePath("/list/subjects");
     return { success: true, error: false };
   } catch (err) {
     console.log(err);
@@ -532,6 +795,9 @@ export const deleteExam = async (
   }
 };
 
+/* =========================================================
+ * 📕 LESSONS
+ * ========================================================= */
 export async function createLesson(data: any) {
   try {
     // converte "07:00" em um objeto Date válido no formato ISO
@@ -601,25 +867,34 @@ export const deleteLesson = async (
   }
 };
 
-
-// 🟩 Criar novo parent
+/* =========================================================
+ * 📕 PARENTS
+ * ========================================================= */
 export const createParent = async (
   currentState: CurrentState,
   data: ParentSchema
 ) => {
   try {
-    const user = await clerkClient.users.createUser({
-      username: data.username,
-      password: data.password,
-      firstName: data.name,
-      lastName: data.surname,
-      emailAddress: data.email ? [data.email] : undefined,
-      publicMetadata: { role: "parent" },
-    });
-
+    /**
+     * ================================
+     * 🔁 CLERK (DESATIVADO TEMPORARIAMENTE)
+     * ================================
+     *
+     * const user = await clerkClient.users.createUser({
+     *   username: data.username,
+     *   password: data.password,
+     *   firstName: data.name,
+     *   lastName: data.surname,
+     *   emailAddress: data.email ? [data.email] : undefined,
+     *   publicMetadata: { role: "parent" },
+     * });
+     */
+    
+    const parentId = crypto.randomUUID();
     await prisma.parent.create({
       data: {
-        id: user.id,
+        // id: user.id, // quando reativar Clerk
+        id: parentId, // temporário sem Clerk
         username: data.username,
         name: data.name,
         surname: data.surname,
@@ -634,10 +909,9 @@ export const createParent = async (
       },
     });
 
-    // revalidatePath("/list/teachers");
     return { success: true, error: false };
   } catch (err) {
-    console.log(err);
+    console.error("❌ ERRO createParent:", err);
     return { success: false, error: true };
   }
 };
@@ -651,13 +925,19 @@ export const updateParent = async (
     return { success: false, error: true };
   }
   try {
-    const user = await clerkClient.users.updateUser(data.id, {
-      username: data.username,
-      ...(data.password !== "" && { password: data.password }),
-      firstName: data.name,
-      lastName: data.surname,
-    });
-
+    /**
+     * ================================
+     * 🔁 CLERK (DESATIVADO TEMPORARIAMENTE)
+     * ================================
+     *
+     * Quando quiser reativar o Clerk:
+     * const user = await clerkClient.users.updateUser(data.id, {
+     * username: data.username,
+     *  ...(data.password !== "" && { password: data.password }),
+     *  firstName: data.name,
+     *  lastName: data.surname,
+     * });
+     */
     await prisma.parent.update({
       where: {
         id: data.id,
@@ -692,8 +972,13 @@ export const deleteParent = async (
   const id = formData.get("id") as string;
 
   try {
-    await clerkClient.users.deleteUser(id);
-
+    /**
+     * ================================
+     * 🔁 CLERK (DESATIVADO TEMPORARIAMENTE)
+     * ================================
+     *
+     * await clerkClient.users.deleteUser(id);
+     */
     await prisma.parent.delete({
       where: { id },
     });
@@ -705,13 +990,21 @@ export const deleteParent = async (
   }
 };
 
-// 🟩 Criar novo assignment
+/* =========================================================
+ * 📕 ASSIGNMENTS
+ * ========================================================= */
 export const createAssignment = async (
   currentState: CurrentState,
   data: AssignmentSchema
 ) => {
-  const { userId, sessionClaims } = auth();
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const user = await requireAuth();
+  const userId = user.id;
+  const role = user.role;
+  /**
+   * 🔁 CLERK (DESATIVADO)
+   * const { userId, sessionClaims } = auth();
+   * const role = (sessionClaims?.metadata as { role?: string })?.role;
+   */
 
   try {
     // Se professor, verificar se a aula pertence ao professor
@@ -729,7 +1022,7 @@ export const createAssignment = async (
       data: {
         title: data.title,
         startDate: data.startDate, // validado pelo Zod
-        dueDate: data.dueDate,     // validado pelo Zod
+        dueDate: data.dueDate, // validado pelo Zod
         lesson: {
           connect: { id: Number(data.lessonId) },
         },
@@ -749,8 +1042,15 @@ export const updateAssignment = async (
   currentState: CurrentState,
   data: AssignmentSchema
 ) => {
-  const { userId, sessionClaims } = auth();
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
+  const user = await requireAuth();
+  const userId = user.id;
+  const role = user.role;
+
+  /**
+   * 🔁 CLERK (DESATIVADO)
+   * const { userId, sessionClaims } = auth();
+   * const role = (sessionClaims?.metadata as { role?: string })?.role;
+   */
 
   try {
     // Se professor, garantir que ele é dono da aula
@@ -778,7 +1078,6 @@ export const updateAssignment = async (
 
     revalidatePath("/list/assignments");
     return { success: true, error: false };
-
   } catch (err) {
     console.log("ERRO NO UPDATE:", err);
     return { success: false, error: true };
@@ -904,7 +1203,7 @@ export const createEvent = async (
     console.error("❌ Erro ao criar evento:", err);
     return { success: false, error: true };
   }
-}; 
+};
 // 🟦 Atualizar evento
 export const updateEvent = async (
   currentState: { success: boolean; error: boolean },
@@ -990,7 +1289,13 @@ export const createAttendance = async (
 // UPDATE ATTENDANCE (atualiza um registro por id)
 export const updateAttendance = async (
   currentState: { success: boolean; error: boolean },
-  data: { id: number; status?: any; date?: Date | string; lessonId?: number; studentId?: string }
+  data: {
+    id: number;
+    status?: any;
+    date?: Date | string;
+    lessonId?: number;
+    studentId?: string;
+  }
 ) => {
   try {
     const updatePayload: any = {};
@@ -1108,4 +1413,3 @@ export const deleteAnnouncement = async (id: number) => {
     throw new Error("Failed to delete announcement!");
   }
 };
-
