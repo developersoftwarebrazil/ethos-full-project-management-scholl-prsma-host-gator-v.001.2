@@ -6,6 +6,7 @@ import Link from "next/link";
 
 export default function LandingPage() {
   return (
+
     <main className="min-h-screen bg-lamaSkyLight flex flex-col">
       {/* ================= HEADER ================= */}
       <header className="flex items-center justify-between px-8 py-4 bg-white shadow">
