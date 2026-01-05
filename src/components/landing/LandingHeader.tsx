@@ -21,14 +21,14 @@ export default function LandingHeader() {
           <Link href="#">Quem somos</Link>
           <Link href="#">Fale conosco</Link>
         </nav>
-
-        <Link href="/auth/login" className={styles.areaAluno}>
-          Área do aluno
-        </Link>
-        <Link href="/auth/login" className={styles.entrar}>
-          Entrar
-        </Link>
-
+        <div className="styles.area">
+          <Link href="/auth/login" className={styles.areaAluno}>
+            Área do aluno
+          </Link>
+          <Link href="/auth/login" className={styles.entrar}>
+            Entrar
+          </Link>
+        </div>
       </div>
     </header>
   );

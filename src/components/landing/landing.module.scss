@@ -1,5 +1,5 @@
 .hero {
-  background: linear-gradient(200deg, #2563eb,  #edfffc);
+  background: linear-gradient(360deg,#334155, #fef9c3, #ede9fe,  #f7fdff);
   padding-bottom: 5rem;
 }
 .heroGrid {
@@ -82,6 +82,7 @@
   border: 1px solid #eee;
   padding: 0.75rem 1.75rem;
   border-radius: 10px;
+  background: #fb1;
 }
 
 .about,
@@ -142,7 +143,7 @@
 }
 
 .cta {
-  background: #0f172a;
+  background: #fef9c3;
   color: white;
   text-align: center;
   padding: 4rem 2rem;
@@ -180,7 +181,12 @@
     font-weight: 500;
   }
 }
+.area{
+  display: flex;
+  gap: 1rem;
+}
 .entrar {
+  margin-right: 0;
   background-color: #2563eb;
   color: white;
   padding: 0.5rem 1.25rem;
@@ -189,7 +195,6 @@
 }
 
 .areaAluno {
-  border: 2px solid #334155;
   color: #0f172a;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -200,7 +205,7 @@
 /* ================= FOOTER ================= */
 
 .footer {
-  background: linear-gradient(180deg, #020617, #020617);
+ background: #1e293b;
   color: #cbd5f5;
   margin-top: 6rem;
 }
