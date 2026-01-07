@@ -308,7 +308,7 @@
   background: #1e293b;
 }
 .featured {
-  border: 2px solid #fb5;
+  border: 2px solid  #7CE04A;
   transform: scale(1.05);
 }
 
@@ -360,13 +360,7 @@
   }
 }
 
-/* ================= RESPONSIVO ================= */
 
-@media (max-width: 768px) {
-  .featured {
-    transform: none;
-  }
-}
 
 /* ================= FOOTER ================= */
 
@@ -496,7 +490,9 @@
   .description {
     font-size: 1rem;
   }
-
+ .featured {
+    transform: none;
+  }
   .heroImage {
     width: 200px;
     height: 200px;
@@ -514,6 +510,9 @@
     text-align: center;
   }
 }
+/* ================= RESPONSIVO ================= */
+
+
 // MOBILE de até 480px
 @media (max-width: 480px) {
   .title {
