@@ -2,12 +2,12 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 import Announcements from "@/components/Announcements-funcionando";
-import AttendanceChartContainer from "@/components/AttendanceChartContainer";
-import CountChartContainer from "@/components/CountChartContainer";
+import AttendanceChartContainer from "@/components/dashboards/charts/AttendanceChartContainer";
+import CountChartContainer from "@/components/dashboards/charts/CountChartContainer";
 import EventCalendarContainer from "@/components/EventCalendarContainer";
-import FinanceChart from "@/components/FinanceChart";
+import FinanceChart from "@/components/dashboards/charts/FinanceChart";
 
-import UserCard from "@/components/dashboards/cards/UserCard";
+import UserCard from "@/components/ui/cards/UserCard";
 const AdminPage = ({
   searchParams,
 }: {

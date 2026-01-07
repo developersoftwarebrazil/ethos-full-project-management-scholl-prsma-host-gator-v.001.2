@@ -4,7 +4,7 @@ import Table from "@/components/Table";
 import TableSearch from "@/components/TableSearch";
 import Pagination from "@/components/Pagination";
 import FormModal from "@/components/FormModal";
-import AttendanceChartContainer from "@/components/AttendanceChartContainer";
+import AttendanceChartContainer from "@/components/dashboards/charts/AttendanceChartContainer";
 import { ITEM_PER_PAGE } from "@/lib/settings";
 import { Attendance, Prisma } from "@prisma/client";
 import { getAuthRole, getCurrentUserId } from "@/lib/auth";
