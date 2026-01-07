@@ -30,9 +30,9 @@ const Announcements = () => {
   }, []);
 
   const colors = [
-    "bg-lamaSkyLight",
-    "bg-lamaPurpleLight",
-    "bg-lamaYellowLight",
+    "bg-ethosSkyLight",
+    "bg-ethosPurpleLight",
+    "bg-ethosYellowLight",
   ];
 
   return (

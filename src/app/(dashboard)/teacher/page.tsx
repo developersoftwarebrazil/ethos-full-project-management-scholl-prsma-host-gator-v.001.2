@@ -5,7 +5,7 @@
  */
 // import { auth } from "@clerk/nextjs/server";
 
-import Announcements from "@/components/Announcements";
+import Announcements from "@/components/dashboards/announcements/Announcements";
 import dynamic from "next/dynamic";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";

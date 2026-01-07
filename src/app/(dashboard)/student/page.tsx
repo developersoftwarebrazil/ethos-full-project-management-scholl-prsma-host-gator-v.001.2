@@ -8,7 +8,7 @@
  */
 // import { auth } from "@clerk/nextjs/server";
 
-import Announcements from "@/components/Announcements";
+import Announcements from "@/components/dashboards/announcements/Announcements";
 import EventCalendar from "@/components/EventCalendar";
 import prisma from "@/lib/prisma";
 import dynamic from "next/dynamic";
@@ -97,14 +97,9 @@ const StudentPage = async () => {
       {/* LEFT */}
       <div className="w-full xl:w-2/3">
         <div className="h-full bg-white p-4 rounded-md">
-          <h1 className="text-xl font-semibold">
-            Agenda ({classItem.name})
-          </h1>
+          <h1 className="text-xl font-semibold">Agenda ({classItem.name})</h1>
 
-          <BigCalendarContainer
-            type="classId"
-            id={classItem.id}
-          />
+          <BigCalendarContainer type="classId" id={classItem.id} />
         </div>
       </div>
 

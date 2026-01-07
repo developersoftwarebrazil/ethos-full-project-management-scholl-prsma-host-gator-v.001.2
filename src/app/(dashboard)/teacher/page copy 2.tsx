@@ -8,7 +8,7 @@
  */
 // import { auth } from "@clerk/nextjs/server";
 
-import Announcements from "@/components/Announcements"; 
+import Announcements from "@/components/dashboards/announcements/Announcements";
 //import BigCalendarContainer from "@/components/BigCalendarContainer";
 import dynamic from "next/dynamic";
 import { cookies } from "next/headers";
