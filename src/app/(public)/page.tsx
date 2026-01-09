@@ -13,8 +13,8 @@ export default function PublicHomePage() {
     <LandingHeader />
       <Hero />
       <About />
-      <Highlights />
       <Benefits />
+      <Highlights />
       <FAQ />
       <CTA />
     <LandingFooter />

@@ -255,7 +255,7 @@
     width: 180px;
     height: 180px;
   }
-  .heroCaption strong {
+  .heroCaption {
     opacity: 0;
   }
 }
@@ -653,10 +653,18 @@
 }
 /* ================= BENEFITS ================= */
 
+// .benefitsSection {
+//   // background: #020617;
+//   background: #3a6604;
+//   padding: 6rem 2rem;
+// }
 .benefitsSection {
-  // background: #020617;
-  background: #3a6604;
-  padding: 6rem 2rem;
+  background: linear-gradient(
+    180deg,
+    #020617 0%,
+    #1e293b 100%
+  );
+  padding: 6rem 2rem
 }
 
 .benefitsContainer {
