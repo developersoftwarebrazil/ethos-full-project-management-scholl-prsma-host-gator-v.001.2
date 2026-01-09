@@ -1,27 +1,17 @@
-// src/app/(public)/layout.tsx  OU  src/app/layout.tsx
-import type { Metadata } from "next";
-import { chathura, openSans, roboto } from "@/functions/fonts";
+// src/app/(public)/layout.tsx
+import LandingHeader from "@/components/landing/LandingHeader";
+import LandingFooter from "@/components/landing/LandingFooter";
 
-export const metadata: Metadata = {
-  title: "ETHOS – Cursos Integrados",
-  description: "Plataforma de gestão educacional ETHOS",
-};
-
-export default function RootLayout({
+export default function PublicLayout({
   children,
-}: Readonly<{ children: React.ReactNode }>) {
+}: {
+  children: React.ReactNode;
+}) {
   return (
-    <html lang="pt-BR">
-      <body
-        className={`${chathura.variable} ${openSans.variable} ${roboto.variable}`}
-      >
-        <div className="App">
-          
-          <main className="AppBody">
-            <div className="AppContent">{children}</div>
-          </main>
-        </div>
-      </body>
-    </html>
+    <>
+      <LandingHeader />
+      <main>{children}</main>
+      <LandingFooter />
+    </>
   );
 }
