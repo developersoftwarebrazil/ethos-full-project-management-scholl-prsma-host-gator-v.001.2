@@ -46,6 +46,14 @@ body {
 /* =====================================================
    ELEMENTOS GLOBAIS
 ===================================================== */
+/* ================= DESIGN TOKENS ================= */
+:root {
+  --ethos-dark: #020617;
+  --ethos-blue: #0e0e55;
+  --ethos-gold: #fb5;
+  --ethos-text-light: #e5e7eb;
+  --ethos-text-muted: #cbd5f5;
+}
 a {
   text-decoration: none;
   color: inherit;

@@ -35,8 +35,10 @@ export default function Highlights() {
             <li>Acesso e download as video aulas</li>
             <li>Certificado ao finalizar o curso</li>
           </ul>
-          <span className={styles.price}>R$ 390 / mês</span>
-          <p>à vista R$ 4680</p>
+          <span className={styles.price}>R$ 4000</span>
+          <p>à vista R$ 3200 no Pix</p>
+          <p>ou em até 12 de R$ 330 no boleto</p>
+
           <button>Assinar vitalício</button>
         </div>
 

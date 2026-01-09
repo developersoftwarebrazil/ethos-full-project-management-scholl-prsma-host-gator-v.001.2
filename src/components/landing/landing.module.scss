@@ -5,6 +5,20 @@
   overflow: hidden;
 }
 
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image: url("/assets/ethos-icon.svg");
+  background-repeat: no-repeat;
+  background-position: left -150px top 50px;
+  background-size: 600px;
+
+  opacity: 0.04;
+  pointer-events: none;
+}
+
 .hero::before {
   content: "";
   position: absolute;
@@ -21,6 +35,7 @@
   margin: 0 auto;
   padding: 5rem 2rem 6rem;
 }
+
 .heroGrid {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -122,37 +137,7 @@
   align-items: center;
   gap: 0.75rem;
 }
-.heroCaption {
-  position: absolute;
-  bottom: 2rem;
-  left: 50%;
-  transform: translateX(-50%);
 
-  width: 100%;
-  padding: 0.6rem 0.4rem;
-
-  background: linear-gradient(
-    to top,
-    rgba(2, 6, 23, 0.75),
-    rgba(2, 6, 23, 0.25),
-    transparent
-  );
-
-  text-align: center;
-  border-radius: 0 0 50% 50%;
-
-  strong {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 700;
-    color: #ffffff;
-  }
-
-  span {
-    font-size: 0.7rem;
-    color: #c7d2fe;
-  }
-}
 .heroCaption {
   position: absolute;
   bottom: 2.5rem;
@@ -473,6 +458,20 @@
 .aboutSection {
   background: #ffffff;
   padding: 6rem 2rem;
+  position: relative;
+}
+.aboutSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image: url("/assets/ethos-icon.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 420px;
+
+  opacity: 0.03;
+  pointer-events: none;
 }
 
 .aboutContainer {
@@ -565,13 +564,12 @@
   color: white;
   padding: 5rem 2rem;
   text-align: center;
+  position: relative;
 }
-
 .sectionSubtitle {
   color: #c7d2fe;
   margin-bottom: 3rem;
 }
-
 .pricingGrid {
   max-width: 1100px;
   margin: 0 auto;
@@ -579,7 +577,6 @@
   gap: 2rem;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
-
 .pricingCardMonth,
 .pricingCardFull,
 .pricingCardYear {
@@ -619,12 +616,11 @@
 .pricingCardMonth {
   background: #1e293b;
 }
-.pricingCardFull {
-  background: #020617;
-  button {
-    background: #7ce04a;
-  }
+.pricingCardFull button {
+  background: #fb5;
+  color: #020617;
 }
+
 .pricingCardYear {
   background: #1e293b;
 }
@@ -632,7 +628,6 @@
   border: 2px solid #7ce04a;
   transform: scale(1.05);
 }
-
 .badge {
   position: absolute;
   top: -12px;
@@ -659,12 +654,22 @@
 //   padding: 6rem 2rem;
 // }
 .benefitsSection {
-  background: linear-gradient(
-    180deg,
-    #020617 0%,
-    #1e293b 100%
-  );
-  padding: 6rem 2rem
+  background: linear-gradient(180deg, #020617 0%, #1e293b 100%);
+  padding: 6rem 2rem;
+  position: relative;
+}
+
+.benefitsSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image: url("/assets/ethos-icon.svg");
+  background-repeat: no-repeat;
+  background-position: left -40px top 10px;
+  background-size: 400px;
+
+  opacity: 0.03;
 }
 
 .benefitsContainer {
@@ -675,8 +680,8 @@
 
 .benefitsBadge {
   display: inline-block;
-  background: #1e293b;
-  color: #c7d2fe;
+  background: rgba(251, 187, 85, 0.12);
+  color: #fb5;
   padding: 0.35rem 0.9rem;
   border-radius: 999px;
   font-size: 0.75rem;
