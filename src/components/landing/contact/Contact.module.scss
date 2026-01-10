@@ -1,0 +1,198 @@
+
+/* ================= CONTACT ================= */
+
+.contactSection {
+  background: linear-gradient(180deg, #020617 0%, #0e0e55 100%);
+  padding: 6rem 2rem;
+}
+.contactSection > * {
+  position: relative;
+  z-index: 1;
+}
+
+.contactSection::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+
+  background-image: url("/assets/ethos-icon.svg");
+  background-repeat: no-repeat;
+  background-position: right -160px bottom -120px;
+  background-size: clamp(300px, 45vw, 440px);
+
+  opacity: 0.025;
+  filter: blur(0.4px);
+
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+.contactContainer {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+  position: relative;
+}
+.contactBadge {
+  display: inline-block;
+  background: rgba(251, 187, 85, 0.12);
+  color: #fb5;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.contactTitle {
+  font-size: 2.3rem;
+  font-weight: 800;
+  color: white;
+  margin-bottom: 1rem;
+
+  span {
+    color: #fb5;
+  }
+}
+
+.contactSubtitle {
+  max-width: 520px;
+  margin: 0 auto 3rem;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #cbd5f5;
+
+  strong {
+    color: white;
+  }
+}
+.contactForm {
+  background: #020617;
+  border: 1px solid #1e293b;
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+  text-align: left;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+
+  label {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #e5e7eb;
+    margin-bottom: 0.35rem;
+  }
+
+  input,
+  textarea {
+    background: #020617;
+    border: 1px solid #334155;
+    border-radius: 10px;
+    padding: 0.7rem 0.85rem;
+    color: white;
+    font-size: 0.95rem;
+    transition: all 0.25s ease;
+
+    &::placeholder {
+      color: #64748b;
+    }
+
+    &:focus {
+      outline: none;
+      border-color: #fb5;
+      box-shadow: 0 0 0 2px rgba(251, 187, 85, 0.25);
+    }
+  }
+
+  textarea {
+    resize: none;
+  }
+}
+.contactButton {
+  margin-top: 2rem;
+  width: 100%;
+  background: #fb5;
+  color: #020617;
+  border: none;
+  padding: 0.9rem;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(251, 187, 85, 0.35);
+  }
+}
+// ================= RESPONSIVE ================= //
+@media (max-width: 1200px) {
+  .contactSection {
+    padding: 5rem 2rem;
+  }
+
+  .contactForm {
+    padding: 2.25rem;
+  }
+}
+@media (max-width: 1024px) {
+  .contactSection::before {
+    background-position: center bottom -80px;
+    background-size: 360px;
+    opacity: 0.02;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .contactContainer {
+    max-width: 640px;
+  }
+}
+@media (max-width: 768px) {
+  .contactSection {
+    padding: 4rem 1.5rem;
+  }
+
+  .contactTitle {
+    font-size: 2rem;
+  }
+
+  .contactSubtitle {
+    font-size: 1rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .contactForm {
+    padding: 2rem 1.5rem;
+  }
+}
+@media (max-width: 480px) {
+  .contactSection::before {
+    background-size: 220px;
+    background-position: center bottom -40px;
+    opacity: 0.015;
+  }
+
+  .contactTitle {
+    font-size: 1.75rem;
+  }
+
+  .contactButton {
+    font-size: 0.9rem;
+    padding: 0.85rem;
+  }
+}

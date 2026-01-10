@@ -3,9 +3,13 @@ import styles from "./Highlights.module.scss";
 export default function Highlights() {
   return (
     <section className={styles.pricing}>
+      <span className={styles.pricingBadge}>valores</span>
       <h2 className={styles.sectionTitle}>Planos de Acesso</h2>
       <p className={styles.sectionSubtitle}>
-        Escolha o plano ideal para sua formação em Psicanálise ou em outro de nosso cursos<br /><span> Comece agora mesmo.</span> 
+        Escolha o plano ideal para sua formação em Psicanálise ou em outro de
+        nosso cursos
+        <br />
+        <span> Comece agora mesmo.</span>
       </p>
 
       <div className={styles.pricingGrid}>
@@ -36,7 +40,8 @@ export default function Highlights() {
             <li>Certificado ao finalizar o curso</li>
           </ul>
           <span className={styles.price}>R$ 4000</span>
-          <p >à vista R$ 3200 no Pix</p>
+
+          <p>à vista R$ 3200 no Pix</p>
           <p>ou em até 12 de R$ 330 no boleto</p>
 
           <button>Assinar vitalício</button>

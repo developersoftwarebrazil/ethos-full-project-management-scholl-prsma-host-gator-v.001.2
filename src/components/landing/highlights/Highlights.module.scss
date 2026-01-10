@@ -1,5 +1,7 @@
 /* ================= PRICING ================= */
-
+// .highlights {
+//   padding: 5rem 2rem;
+// }
 .pricing {
   background: #020617;
   color: white;
@@ -24,6 +26,21 @@
   pointer-events: none;
   z-index: 0;
 }
+.pricingBadge {
+  display: inline-block;
+  background: rgba(251, 187, 85, 0.12);
+  color: #fb5;
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+.sectionTitle {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
 
 .sectionSubtitle {
   color: #c7d2fe;
@@ -44,6 +61,13 @@
   padding: 2.5rem 2rem;
   text-align: left;
   position: relative;
+  transition: transform 0.35s ease, box-shadow 0.35s ease,
+    border-color 0.35s ease;
+  &:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: #fb5;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.55);
+  }
 
   h3 {
     font-size: 1.5rem;
@@ -59,6 +83,13 @@
       margin-bottom: 0.75rem;
       color: #e5e7eb;
     }
+  }
+
+  p {
+    font-size: 0.9rem;
+  color: #c7d2fe;
+  margin-bottom: 1.5rem;
+    margin: 0.25rem 0;
   }
 
   button {
@@ -82,11 +113,19 @@
 
 .pricingCardYear {
   background: #1e293b;
+  
 }
 .featured {
   border: 2px solid #7ce04a;
-  transform: scale(1.05);
+  transform: scale(1.06);
+  box-shadow: 0 25px 55px rgba(124, 224, 74, 0.25);
+
+  &:hover {
+    transform: scale(1.08) translateY(-12px);
+    box-shadow: 0 35px 70px rgba(124, 224, 74, 0.45);
+  }
 }
+
 .badge {
   position: absolute;
   top: -12px;
@@ -105,6 +144,7 @@
   font-weight: 700;
   margin-bottom: 1.5rem;
 }
+
 // ================= RESPONSIVE =================
 @media (max-width: 1200px) {
   .pricing {

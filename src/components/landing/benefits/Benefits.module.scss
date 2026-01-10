@@ -1,11 +1,11 @@
-
 /* ================= BENEFITS ================= */
 
-// .benefitsSection {
-//   // background: #020617;
-//   background: #3a6604;
-//   padding: 6rem 2rem;
-// }
+.benefits {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+  text-align: center;
+}
 .benefitsSection {
   background: linear-gradient(180deg, #020617 0%, #1e293b 100%);
   padding: 6rem 2rem;
@@ -28,7 +28,6 @@
   pointer-events: none;
   z-index: 0;
 }
-
 
 .benefitsContainer {
   max-width: 1100px;

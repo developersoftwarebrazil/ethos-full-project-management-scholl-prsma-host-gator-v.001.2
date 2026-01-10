@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import styles from "./landing.module.scss";
+import styles from "./Contact.module.scss";
 
 export default function Contact() {
   const [loading, setLoading] = useState(false);
