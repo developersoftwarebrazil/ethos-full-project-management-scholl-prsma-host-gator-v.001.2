@@ -29,14 +29,14 @@ export default function Highlights() {
           <h3>Vitalício</h3>
           <ul>
             <li>Acesso ilimitado</li>
-            <li>Todos os cursos</li>
+            <li>Todos os cursos por 2 anos</li>
             <li>Suporte premium</li>
             <li>Acesso e download aos materiais do curso</li>
             <li>Acesso e download as video aulas</li>
             <li>Certificado ao finalizar o curso</li>
           </ul>
           <span className={styles.price}>R$ 4000</span>
-          <p>à vista R$ 3200 no Pix</p>
+          <p >à vista R$ 3200 no Pix</p>
           <p>ou em até 12 de R$ 330 no boleto</p>
 
           <button>Assinar vitalício</button>
