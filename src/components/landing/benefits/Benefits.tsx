@@ -1,4 +1,4 @@
-import styles from "./landing.module.scss";
+import styles from "./Benefits.module.scss";
 
 export default function Benefits() {
   return (
