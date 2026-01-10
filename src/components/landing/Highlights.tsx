@@ -29,7 +29,7 @@ export default function Highlights() {
           <h3>Vitalício</h3>
           <ul>
             <li>Acesso ilimitado</li>
-            <li>Todos os cursos por 2 anos</li>
+            <li>Todos os cursos</li>
             <li>Suporte premium</li>
             <li>Acesso e download aos materiais do curso</li>
             <li>Acesso e download as video aulas</li>
