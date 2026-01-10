@@ -1,8 +1,38 @@
 "use client";
 
+import { useState } from "react";
 import styles from "./landing.module.scss";
 
 export default function Contact() {
+  const [loading, setLoading] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setLoading(true);
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const response = await fetch("/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: formData.get("name"),
+        email: formData.get("email"),
+        message: formData.get("message"),
+      }),
+    });
+
+    setLoading(false);
+
+    if (response.ok) {
+      alert("Mensagem enviada com sucesso! Em breve entraremos em contato.");
+      form.reset();
+    } else {
+      alert("Erro ao enviar mensagem. Tente novamente.");
+    }
+  }
+
   return (
     <section id="contato" className={styles.contactSection}>
       <div className={styles.contactContainer}>
@@ -13,77 +43,35 @@ export default function Contact() {
         </h2>
 
         <p className={styles.contactSubtitle}>
-          Tem dúvidas sobre nossos cursos, certificações ou sobre a plataforma
-          ETHOS?
+          Tem dúvidas sobre nossos cursos ou a plataforma?
           <br />
-          <strong>
-            Envie sua mensagem e nossa equipe retornará o mais breve possível.
-          </strong>
+          <strong>Envie sua mensagem e responderemos em breve.</strong>
         </p>
 
-        <form
-          className={styles.contactForm}
-          onSubmit={async (e) => {
-            e.preventDefault();
-
-            const form = e.currentTarget;
-            const formData = new FormData(form);
-
-            const response = await fetch("/api/contact", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                name: formData.get("name"),
-                email: formData.get("email"),
-                message: formData.get("message"),
-              }),
-            });
-
-            if (response.ok) {
-              alert("Mensagem enviada com sucesso! Em breve entraremos em contato.");
-              form.reset();
-            } else {
-              alert("Ocorreu um erro ao enviar sua mensagem. Tente novamente.");
-            }
-          }}
-        >
+        <form className={styles.contactForm} onSubmit={handleSubmit}>
           <div className={styles.formGrid}>
             <div className={styles.field}>
-              <label htmlFor="name">Nome completo</label>
-              <input
-                type="text"
-                id="name"
-                name="name"
-                placeholder="Digite seu nome"
-                required
-              />
+              <label>Nome completo</label>
+              <input name="name" required />
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="email">E-mail</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                placeholder="seuemail@exemplo.com"
-                required
-              />
+              <label>E-mail</label>
+              <input type="email" name="email" required />
             </div>
           </div>
 
           <div className={styles.field}>
-            <label htmlFor="message">Mensagem</label>
-            <textarea
-              id="message"
-              name="message"
-              rows={5}
-              placeholder="Conte-nos como podemos ajudar você"
-              required
-            />
+            <label>Mensagem</label>
+            <textarea name="message" rows={5} required />
           </div>
 
-          <button type="submit" className={styles.contactButton}>
-            Enviar mensagem
+          <button
+            type="submit"
+            className={styles.contactButton}
+            disabled={loading}
+          >
+            {loading ? "Enviando..." : "Enviar mensagem"}
           </button>
         </form>
       </div>

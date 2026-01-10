@@ -1,13 +1,14 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import nodemailer from "nodemailer";
+import sgMail from "@sendgrid/mail";
 
 const prisma = new PrismaClient();
 
+sgMail.setApiKey(process.env.SENDGRID_API_KEY!);
+
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
-    const { name, email, message } = body;
+    const { name, email, message } = await req.json();
 
     if (!name || !email || !message) {
       return NextResponse.json(
@@ -16,29 +17,18 @@ export async function POST(req: Request) {
       );
     }
 
-    // 1️⃣ Salva no banco
+    // 1️⃣ Salvar no banco
     const contact = await prisma.contact.create({
-      data: {
-        name,
-        email,
-        message,
-      },
+      data: { name, email, message },
     });
 
-    // 2️⃣ Envia email
-    const transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+    // 2️⃣ Enviar e-mail
+    await sgMail.send({
+      to: process.env.CONTACT_RECEIVER_EMAIL!,
+      from: {
+        email: process.env.FROM_EMAIL!,
+        name: "Ethos CPAC",
       },
-    });
-
-    await transporter.sendMail({
-      from: `"Ethos CPAC" <${process.env.SMTP_USER}>`,
-      to: process.env.CONTACT_RECEIVER_EMAIL,
       subject: "📩 Novo contato pelo site",
       html: `
         <h2>Novo contato recebido</h2>
@@ -49,9 +39,9 @@ export async function POST(req: Request) {
       `,
     });
 
-    return NextResponse.json({ success: true, contact });
+    return NextResponse.json({ success: true });
   } catch (error) {
-    console.error(error);
+    console.error("CONTACT ERROR:", error);
     return NextResponse.json(
       { error: "Erro ao enviar contato" },
       { status: 500 }
