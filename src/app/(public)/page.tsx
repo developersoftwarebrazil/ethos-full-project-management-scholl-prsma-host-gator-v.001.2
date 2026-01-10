@@ -1,4 +1,4 @@
-import Hero from "@/components/landing/Hero";
+import Hero from "@/components/landing/hero/Hero";
 import About from "@/components/landing/About";
 import Highlights from "@/components/landing/Highlights";
 import Benefits from "@/components/landing/Benefits";
