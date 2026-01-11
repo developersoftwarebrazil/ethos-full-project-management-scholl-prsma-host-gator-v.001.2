@@ -6,7 +6,7 @@ export default function CTA() {
     <section className={styles.cta}>
       <h2>Pronto para transformar sua escola?</h2>
 
-      <Link href="/auth/login" className={styles.btnPrimary}>
+      <Link href="/login" className={styles.btnPrimary}>
         Entrar no sistema
       </Link>
     </section>

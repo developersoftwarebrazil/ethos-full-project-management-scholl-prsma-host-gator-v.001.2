@@ -29,10 +29,10 @@ export default function LandingHeader() {
         </nav>
 
         <div className={styles.area}>
-          <Link href="/auth/login" className={styles.areaStudent}>
+          <Link href="/login" className={styles.areaStudent}>
             Área do aluno
           </Link>
-          <Link href="/auth/login" className={styles.btnEnter}>
+          <Link href="/login" className={styles.btnEnter}>
             Entrar
           </Link>
         </div>
@@ -54,10 +54,10 @@ export default function LandingHeader() {
           <Link href="#">Quem somos</Link>
           <Link href="#">Fale conosco</Link>
 
-          <Link href="/auth/login" className={styles.areaStudent}>
+          <Link href="/login" className={styles.areaStudent}>
             Área do aluno
           </Link>
-          <Link href="/auth/login" className={styles.entrar}>
+          <Link href="/login" className={styles.entrar}>
             Entrar
           </Link>
         </div>
