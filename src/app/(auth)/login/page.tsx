@@ -17,7 +17,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import styles from "@/styles/account/Login.module.scss";
+import styles from "@/styles/account/login/Login.module.scss";
 
 
 const LoginPage = () => {
