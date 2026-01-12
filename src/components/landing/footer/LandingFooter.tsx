@@ -6,8 +6,11 @@ import {
   MapPin,
   Instagram,
   Facebook,
-  Linkedin,
+  CreditCard,
+  QrCode,
+  Barcode,
 } from "lucide-react";
+import Link from "next/link";
 
 export default function LandingFooter() {
   return (
@@ -28,18 +31,29 @@ export default function LandingFooter() {
           <ul className={styles.contactList}>
             <li>
               <Phone size={16} />
-              <span>(19) 99287-1931</span>
+              <span>
+                <a href="tel:+5519992871931">(19) 99287-1931</a>
+              </span>
             </li>
             <li>
               <Mail size={16} />
-              <span>direthosadm@gmail.com</span>
+              <span>
+                {" "}
+                <a href="mailto:direthosadm@gmail.com">direthosadm@gmail.com</a>
+              </span>
             </li>
             <li>
               <MapPin size={16} />
               <span>
-                Avenida José Camargo Arruda, 270
-                <br />
-                Fernandópolis - SP
+                <a
+                  href="https://www.google.com/maps/search/?api=1&query=Avenida+José+Camargo+Arruda,+270,+Fernandópolis,+SP"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Avenida José Camargo Arruda, 270
+                  <br />
+                  Fernandópolis - SP
+                </a>
               </span>
             </li>
           </ul>
@@ -58,27 +72,47 @@ export default function LandingFooter() {
         <div className={styles.footerSocial}>
           <h4>Redes sociais</h4>
           <div className={styles.socialIcons}>
-            <a href="#" aria-label="Instagram">
+            <Link
+              href="https://www.instagram.com/wagner_toledoofc?igsh=MTBraGdkOW54cnZxMA=="
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Instagram"
+            >
               <Instagram size={20} />
-            </a>
-            <a href="#" aria-label="Facebook">
+            </Link>
+
+            <Link
+              href="https://www.facebook.com/share/17zq9rDg5X/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Facebook"
+            >
               <Facebook size={20} />
-            </a>
-            <a href="#" aria-label="LinkedIn">
-              <Linkedin size={20} />
-            </a>
+            </Link>
           </div>
         </div>
 
         {/* PAGAMENTOS */}
+        {/* PAGAMENTOS */}
         <div className={styles.footerPayment}>
           <h4>Formas de pagamento</h4>
-          <Image
-            src="/payments.png"
-            alt="Formas de pagamento"
-            width={200}
-            height={40}
-          />
+
+          <div className={styles.paymentList}>
+            <div className={styles.paymentItem}>
+              <QrCode size={22} />
+              <span>Pix</span>
+            </div>
+
+            <div className={styles.paymentItem}>
+              <Barcode size={22} />
+              <span>Boleto</span>
+            </div>
+
+            <div className={styles.paymentItem}>
+              <CreditCard size={22} />
+              <span>Cartão</span>
+            </div>
+          </div>
         </div>
       </div>
 

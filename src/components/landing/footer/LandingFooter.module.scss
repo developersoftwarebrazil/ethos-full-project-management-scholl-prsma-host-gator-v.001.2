@@ -91,6 +91,53 @@
     }
   }
 }
+.footerPayment {
+  .paymentList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+}
+.paymentItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: #c9d1d9;
+  opacity: 0.9;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+
+  transition:
+    background 0.25s ease,
+    transform 0.15s ease,
+    opacity 0.2s ease;
+
+  svg {
+    stroke-width: 1.6;
+    color: #58a6ff;
+    transition: transform 0.25s ease, color 0.25s ease;
+  }
+
+  &:hover {
+    background: #161b22;
+    opacity: 1;
+    transform: translateY(-1px);
+
+    svg {
+      color: #79c0ff;
+      transform: scale(1.1);
+    }
+  }
+
+  &:active {
+    transform: scale(0.97);
+    background: #0d1117;
+  }
+}
+
+
 
 .footerBottom {
   margin-top: 48px;
@@ -100,6 +147,7 @@
   font-size: 0.85rem;
   color: #8b949e;
 }
+
 //================= RESPONSIVE ================= */
 @media (max-width: 1200px) {
   .footer {
@@ -155,6 +203,13 @@
   }
 
   .socialIcons {
+    justify-content: center;
+  }
+  .paymentList {
+    align-items: center;
+  }
+
+  .paymentItem {
     justify-content: center;
   }
 }
