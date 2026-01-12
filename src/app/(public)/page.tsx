@@ -7,11 +7,13 @@ import CTA from "@/components/landing/cta/CTA";
 import Contact from "@/components/landing/contact/Contact";
 import LandingHeader from "@/components/landing/header/LandingHeader";
 import LandingFooter from "@/components/landing/footer/LandingFooter";
+import WhatsAppFloating from "@/components/ui/whatsapp/WhatsAppFloating";
 
 export default function PublicHomePage() {
   return (
     <>
       <LandingHeader />
+      <WhatsAppFloating />
       <Hero />
       <About />
       <Benefits />

@@ -1,0 +1,126 @@
+.whatsapp {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #0e1117;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+  z-index: 999;
+
+  box-shadow: 0 14px 32px rgba(37, 211, 102, 0.45);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.3s ease,
+    background 0.25s ease;
+
+  &:hover {
+    background: #1ebe5d;
+    box-shadow: 0 20px 42px rgba(37, 211, 102, 0.6);
+
+    .tooltip {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
+}
+
+/* 📞 Ícone telefone sobreposto */
+.phoneIcon {
+  position: absolute;
+  bottom: 6px;
+  right: 6px;
+
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+
+  background: #0e1117;
+  color: #25d366;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+
+/* 🔔 Pulse */
+.pulse::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.35);
+  animation: pulse 2.4s infinite;
+  z-index: -1;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* 💬 Tooltip */
+.tooltip {
+  position: absolute;
+  right: 74px;
+  background: #161b22;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  white-space: nowrap;
+
+  opacity: 0;
+  transform: translateX(8px);
+  pointer-events: none;
+
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* 🟢 Status */
+.status {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 10px;
+  height: 10px;
+  background: #00ff88;
+  border-radius: 50%;
+  border: 2px solid #0e1117;
+}
+
+/* 📱 Mobile */
+@media (max-width: 768px) {
+  .tooltip {
+    display: none;
+  }
+
+  .whatsapp {
+    width: 54px;
+    height: 54px;
+    right: 16px;
+    bottom: 16px;
+  }
+}
