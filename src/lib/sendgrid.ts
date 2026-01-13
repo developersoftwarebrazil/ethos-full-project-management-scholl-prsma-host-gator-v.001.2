@@ -26,7 +26,7 @@ export async function sendReplyEmail({
         email: fromEmail,
         name: fromName,
       },
-      subject: "Em resposta à sua mensagem",
+      subject: "Resposta à sua mensagem",
       html: `
         <div style="font-family: Arial, sans-serif; line-height:1.6">
           <h2>Olá, ${name}!</h2>
