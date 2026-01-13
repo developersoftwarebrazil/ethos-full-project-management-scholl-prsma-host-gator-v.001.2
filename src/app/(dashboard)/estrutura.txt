@@ -1,0 +1,50 @@
+.
+├── admin
+│   ├── contacts
+│   │   ├── ActionButtons.tsx
+│   │   ├── page copy.tsx
+│   │   └── page.tsx
+│   ├── messages
+│   │   └── page.tsx
+│   └── page.tsx
+├── estrutura.txt
+├── layout.tsx
+├── list
+│   ├── announcements
+│   │   └── page.tsx
+│   ├── assignments
+│   │   └── page.tsx
+│   ├── attendances
+│   │   ├── [id]
+│   │   └── page.tsx
+│   ├── classes
+│   │   └── page.tsx
+│   ├── events
+│   │   └── page.tsx
+│   ├── exams
+│   │   └── page.tsx
+│   ├── grades
+│   │   └── page.tsx
+│   ├── lessons
+│   │   └── page.tsx
+│   ├── loading.tsx
+│   ├── parents
+│   │   └── page.tsx
+│   ├── results
+│   │   └── page.tsx
+│   ├── students
+│   │   ├── [id]
+│   │   └── page.tsx
+│   ├── subjects
+│   │   └── page.tsx
+│   └── teachers
+│       ├── [id]
+│       └── page.tsx
+├── parent
+│   └── page.tsx
+├── student
+│   └── page.tsx
+└── teacher
+    └── page.tsx
+
+24 directories, 24 files
