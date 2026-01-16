@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import InputField from "./base/InputField";
-import { createGrade, updateGrade } from "@/lib/actions";
+import { createGrade, updateGrade } from "@/lib/actions/index";
 import { Dispatch, SetStateAction, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";

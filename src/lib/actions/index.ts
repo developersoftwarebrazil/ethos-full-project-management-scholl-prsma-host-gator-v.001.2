@@ -13,6 +13,10 @@ import { create } from "domain";
 // ================================
 export * from "@/lib/actions";
 
+export { createGrade } from "./school/grade.actions";
+export { updateGrade } from "./school/grade.actions";
+export { deleteGrade } from "./school/grade.actions";
+
 export { createTeacher } from "./users/teacher.actions";
 export { updateTeacher } from "./users/teacher.actions";
 export { deleteTeacher } from "./users/teacher.actions";

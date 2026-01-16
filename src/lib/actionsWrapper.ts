@@ -5,11 +5,8 @@ import {
   deleteSubject,
   deleteClass,
   // deleteTeacher,
-  deleteStudent,
   deleteExam,
-  deleteParent,
   deleteLesson,
-  deleteGrade,
   deleteAssignment,
   deleteResult,
   deleteEvent,
@@ -17,7 +14,12 @@ import {
   deleteAnnouncement as deleteAnnouncementById,
 } from "./actions"; // ajuste o caminho se necessário
 
-import { deleteTeacher } from "./actions/users/teacher.actions"; // ajuste o caminho se necessário
+import { 
+  deleteGrade,
+  deleteTeacher, 
+  deleteParent,
+  deleteStudent,
+} from "./actions/index"; // ajuste o caminho se necessário
 
 // padrão usado pelo useFormState no seu projeto
 export type DeleteState = { success: boolean; error: boolean };
