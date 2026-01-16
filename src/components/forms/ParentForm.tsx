@@ -7,7 +7,7 @@ import Image from "next/image";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { parentSchema, ParentSchema } from "@/lib/formValidationSchemas";
 import { useFormState } from "react-dom";
-import { createParent, updateParent } from "@/lib/actions";
+import { createParent, updateParent } from "@/lib/actions/index";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { CldUploadWidget } from "next-cloudinary";

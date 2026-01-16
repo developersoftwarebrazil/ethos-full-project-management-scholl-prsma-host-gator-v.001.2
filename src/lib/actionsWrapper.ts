@@ -16,7 +16,8 @@ import {
   deleteAttendance as deleteAttendanceAction,
   deleteAnnouncement as deleteAnnouncementById,
 } from "./actions"; // ajuste o caminho se necessário
-import { deleteTeacher } from "./actions/teacher.actions"; // ajuste o caminho se necessário
+
+import { deleteTeacher } from "./actions/users/teacher.actions"; // ajuste o caminho se necessário
 
 // padrão usado pelo useFormState no seu projeto
 export type DeleteState = { success: boolean; error: boolean };
@@ -30,7 +31,7 @@ export type DeleteState = { success: boolean; error: boolean };
 async function wrapDeleteWithFormData(
   fn: (currentState: any, data: FormData) => Promise<any>,
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ): Promise<DeleteState> {
   try {
     // chama a função que já espera (currentState, formData)
@@ -45,7 +46,7 @@ async function wrapDeleteWithFormData(
 async function wrapDeleteExpectingIdNumber(
   fn: (id: number) => Promise<any>,
   _state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ): Promise<DeleteState> {
   try {
     const raw = formData.get("id");
@@ -62,7 +63,7 @@ async function wrapDeleteExpectingIdNumber(
 async function wrapDeleteExpectingIdString(
   fn: (currentState: any, data: FormData) => Promise<any> | Promise<void> | any,
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ): Promise<DeleteState> {
   // Some delete functions expect FormData, others expect string id via data.get('id').
   // We'll attempt to call the fn with (state, formData) and also fallback to calling with parsed id.
@@ -88,72 +89,72 @@ async function wrapDeleteExpectingIdString(
 // Specific wrappers for each delete action
 export const deleteSubjectWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteSubject as any, state, formData);
 
 export const deleteClassWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteClass as any, state, formData);
 
 export const deleteTeacherWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteTeacher as any, state, formData);
 
 export const deleteStudentWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteStudent as any, state, formData);
 
 export const deleteExamWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteExam as any, state, formData);
 
 export const deleteParentWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteParent as any, state, formData);
 
 // lesson wrapper: many variants exist — try formData signature first
 export const deleteLessonWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteLesson as any, state, formData);
 
 // grade / assignment / result follow the (state, formData) pattern
 export const deleteGradeWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteGrade as any, state, formData);
 
 export const deleteAssignmentWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteAssignment as any, state, formData);
 
 export const deleteResultWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteResult as any, state, formData);
 
 // event wrapper: your deleteEvent expects (currentState, FormData) — use that
 export const deleteEventWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteEvent as any, state, formData);
 
 // attendance: in your actions file deleteAttendance signature expects (currentState, data: FormData)
 export const deleteAttendanceWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) => wrapDeleteWithFormData(deleteAttendanceAction as any, state, formData);
 
 // announcement: in your file deleteAnnouncement expects an id:number (or sometimes defined as id:number) — adapt:
 export const deleteAnnouncementWrapper = async (
   state: DeleteState,
-  formData: FormData
+  formData: FormData,
 ) =>
   // try id-number wrapper first (safe)
   wrapDeleteExpectingIdNumber(deleteAnnouncementById as any, state, formData);

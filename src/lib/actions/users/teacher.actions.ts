@@ -175,79 +175,107 @@ export const updateTeacher = async (
 
 
 
-export const deleteTeacher = async (
-  currentState: CurrentState,
+// export const deleteTeacher = async (
+//   currentState: CurrentState,
+//   data: FormData
+// ) => {
+//   /**
+//    * =====================================================
+//    * 📌 ID DO USUÁRIO / PROFESSOR
+//    * =====================================================
+//    * No sistema local:
+//    * - User.id === Teacher.id
+//    */
+//   const id = data.get("id") as string;
+
+//   if (!id) {
+//     return { success: false, error: true };
+//   }
+
+//   try {
+//     /**
+//      * =====================================================
+//      * 🔐 AUTH LOCAL (ATIVO)
+//      * =====================================================
+//      * Ordem IMPORTANTE:
+//      * 1) Deletar entidades dependentes
+//      * 2) Deletar Teacher
+//      * 3) Deletar User
+//      */
+
+//     /**
+//      * 1️⃣ Remove relações (subjects)
+//      * Evita erro de FK
+//      */
+//     await prisma.teacher.update({
+//       where: { id },
+//       data: {
+//         subjects: {
+//           set: [],
+//         },
+//       },
+//     });
+
+//     /**
+//      * 2️⃣ Deleta o TEACHER
+//      */
+//     await prisma.teacher.delete({
+//       where: { id },
+//     });
+
+//     /**
+//      * 3️⃣ Deleta o USER (auth local)
+//      */
+//     await prisma.user.delete({
+//       where: { id },
+//     });
+
+//     /**
+//      * =====================================================
+//      * 🔁 CLERK (DESATIVADO TEMPORARIAMENTE)
+//      * =====================================================
+//      * Quando reativar o Clerk:
+//      *
+//      * ⚠️ ATENÇÃO:
+//      * - NÃO use User.id diretamente se não for o clerkId
+//      * - O ideal é armazenar clerkId separado no User
+//      */
+//     /*
+//     await clerkClient.users.deleteUser(id);
+//     */
+
+//     // revalidatePath("/list/teachers");
+//     return { success: true, error: false };
+//   } catch (err) {
+//     console.error(err);
+//     return { success: false, error: true };
+//   }
+// };
+
+export async function deleteTeacher(
+  _state: any,
   data: FormData
-) => {
-  /**
-   * =====================================================
-   * 📌 ID DO USUÁRIO / PROFESSOR
-   * =====================================================
-   * No sistema local:
-   * - User.id === Teacher.id
-   */
+) {
   const id = data.get("id") as string;
 
-  if (!id) {
-    return { success: false, error: true };
-  }
-
   try {
-    /**
-     * =====================================================
-     * 🔐 AUTH LOCAL (ATIVO)
-     * =====================================================
-     * Ordem IMPORTANTE:
-     * 1) Deletar entidades dependentes
-     * 2) Deletar Teacher
-     * 3) Deletar User
-     */
+    await prisma.$transaction(async (tx) => {
+      await tx.lesson.deleteMany({
+        where: { teacherId: id },
+      });
 
-    /**
-     * 1️⃣ Remove relações (subjects)
-     * Evita erro de FK
-     */
-    await prisma.teacher.update({
-      where: { id },
-      data: {
-        subjects: {
-          set: [],
-        },
-      },
+      await tx.teacher.delete({
+        where: { id },
+      });
+
+      await tx.user.delete({
+        where: { id },
+      });
     });
 
-    /**
-     * 2️⃣ Deleta o TEACHER
-     */
-    await prisma.teacher.delete({
-      where: { id },
-    });
-
-    /**
-     * 3️⃣ Deleta o USER (auth local)
-     */
-    await prisma.user.delete({
-      where: { id },
-    });
-
-    /**
-     * =====================================================
-     * 🔁 CLERK (DESATIVADO TEMPORARIAMENTE)
-     * =====================================================
-     * Quando reativar o Clerk:
-     *
-     * ⚠️ ATENÇÃO:
-     * - NÃO use User.id diretamente se não for o clerkId
-     * - O ideal é armazenar clerkId separado no User
-     */
-    /*
-    await clerkClient.users.deleteUser(id);
-    */
-
-    // revalidatePath("/list/teachers");
     return { success: true, error: false };
   } catch (err) {
     console.error(err);
     return { success: false, error: true };
   }
-};
+}
