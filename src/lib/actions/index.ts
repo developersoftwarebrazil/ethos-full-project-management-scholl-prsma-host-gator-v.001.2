@@ -43,7 +43,7 @@ export { createLesson } from "./school/lesson.action";
 export { updateLesson } from "./school/lesson.action";
 export { deleteLesson } from "./school/lesson.action";
 
-export { createExam } from "./school/exams.actions";  
+export { createExam } from "./school/exams.actions";
 export { updateExam } from "./school/exams.actions";
 export { deleteExam } from "./school/exams.actions";
 
@@ -55,9 +55,13 @@ export { createResult } from "./school/result.action";
 export { updateResult } from "./school/result.action";
 export { deleteResult } from "./school/result.action";
 
-export  {createEvent} from "./school/event.action";
-export {updateEvent} from "./school/event.action";
-export {deleteEvent} from "./school/event.action"
+export { createEvent } from "./school/event.action";
+export { updateEvent } from "./school/event.action";
+export { deleteEvent } from "./school/event.action";
+
+export { createAttendance } from "./school/attendance.action";
+export { updateAttendance } from "./school/attendance.action";
+export { deleteAttendance } from "./school/attendance.action";
 
 // ================================
 // 🧓 LEGADO (TEMPORÁRIO)

@@ -3,11 +3,11 @@
 
 import {
   // deleteTeacher,
-  deleteAttendance as deleteAttendanceAction,
   deleteAnnouncement as deleteAnnouncementById,
 } from "./actions"; // ajuste o caminho se necessário
 
 import { 
+  deleteAttendance as deleteAttendanceAction,
   deleteAssignment,
   deleteClass,
   deleteGrade,
