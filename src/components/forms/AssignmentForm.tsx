@@ -2,7 +2,7 @@
 
 import { useForm, SubmitHandler } from "react-hook-form";
 import { toast } from "react-toastify";
-import { createAssignment, updateAssignment } from "@/lib/actions";
+import { createAssignment, updateAssignment } from "@/lib/actions/index";
 import { Dispatch, SetStateAction } from "react";
 import InputField from "./base/InputField";
 

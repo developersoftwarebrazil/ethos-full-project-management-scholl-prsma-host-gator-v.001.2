@@ -47,6 +47,10 @@ export { createExam } from "./school/exams.actions";
 export { updateExam } from "./school/exams.actions";
 export { deleteExam } from "./school/exams.actions";
 
+export { createAssignment } from "./school/assignment.action";
+export { updateAssignment } from "./school/assignment.action";
+export { deleteAssignment } from "./school/assignment.action";
+
 // ================================
 // 🧓 LEGADO (TEMPORÁRIO)
 // ================================
