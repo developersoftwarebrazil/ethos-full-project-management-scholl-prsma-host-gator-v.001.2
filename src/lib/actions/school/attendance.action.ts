@@ -9,7 +9,9 @@ type CurrentState = {
   error: boolean;
 };
 
-
+/* =========================================================
+ * 📕 ATTENDANCE
+ * ========================================================= */
 
 // CREATE ATTENDANCE (server action compatível com useFormState)
 export const createAttendance = async (

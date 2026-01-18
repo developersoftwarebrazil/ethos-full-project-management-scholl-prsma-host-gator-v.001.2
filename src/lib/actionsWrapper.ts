@@ -3,10 +3,10 @@
 
 import {
   // deleteTeacher,
-  deleteAnnouncement as deleteAnnouncementById,
 } from "./actions"; // ajuste o caminho se necessário
 
 import { 
+  deleteAnnouncement as deleteAnnouncementById,
   deleteAttendance as deleteAttendanceAction,
   deleteAssignment,
   deleteClass,

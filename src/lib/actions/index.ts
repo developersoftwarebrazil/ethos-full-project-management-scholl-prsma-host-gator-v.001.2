@@ -63,6 +63,10 @@ export { createAttendance } from "./school/attendance.action";
 export { updateAttendance } from "./school/attendance.action";
 export { deleteAttendance } from "./school/attendance.action";
 
+export { createAnnouncement } from "./school/announcement.action";
+export { updateAnnouncement } from "./school/announcement.action";
+export { deleteAnnouncement } from "./school/announcement.action";
+
 // ================================
 // 🧓 LEGADO (TEMPORÁRIO)
 // ================================
