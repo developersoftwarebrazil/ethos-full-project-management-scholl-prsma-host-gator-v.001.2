@@ -72,7 +72,6 @@ export default function VideoLessonForm({ relatedData }: any) {
   return (
     <div className="flex flex-col gap-6">
       {/* ⬆️ Upload isolado (Cloudinary) */}
-      <VideoUploadWidget onUploaded={setVideoData} />
 
       {videoData && (
         <p className="text-sm text-green-600">
@@ -103,6 +102,8 @@ export default function VideoLessonForm({ relatedData }: any) {
             </option>
           ))}
         </select>
+      <VideoUploadWidget onUploaded={setVideoData} />
+
 
         <button disabled={loading}>
           {loading ? "Salvando..." : "Salvar aula"}

@@ -75,13 +75,8 @@ const subjects = await prisma.subject.findMany({
   return (
     <div className="flex-1 p-4 flex gap-4 flex-col xl:flex-row">
       {/* LEFT */}
-      <VideoLessonsBlock
-        title="Minhas Videoaulas"
-        lessons={videoLessons}
-        role="teacher"
-      />
+     
       {/* <VideoUploadForm classId={1} subjectId={1} /> */}
-      <VideoLessonForm relatedData={{ classes, subjects }} />
 
       <div className="w-full xl:w-2/3">
         <div className="h-full bg-white p-4 rounded-md">
@@ -92,6 +87,12 @@ const subjects = await prisma.subject.findMany({
 
       {/* RIGHT */}
       <div className="w-full xl:w-1/3 flex flex-col gap-8">
+      <VideoLessonForm relatedData={{ classes, subjects }} />
+       <VideoLessonsBlock
+        title="Minhas Videoaulas"
+        lessons={videoLessons}
+        role="teacher"
+      />
         <Announcements />
       </div>
     </div>
